@@ -1,0 +1,66 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.user_list {
+    position: absolute;
+    bottom: 0;
+    overflow: scroll;
+    height: 25%;
+    width: 100%;
+    margin: 0;
+    border-style: dashed;
+}
+
+.user_div {
+    display: flex;
+    background-color: antiquewhite;
+    padding: 0;
+    margin: 2%;
+    height: 70px;
+}
+
+.user_div > p {
+    align-self: center;
+    margin-left: 5%;
+}
+
+#color_selectors {
+    overflow: auto;
+    height: 40%;
+    border-style: dashed;
+    border-color: brown;
+}
+
+#side_menu {
+    position: absolute;
+    overflow: auto;
+    padding: 0;
+    margin: 5vh;
+    top: 0;
+    left: 0;
+    width: 15vw;
+    height: 90vh;
+    border-style: dotted;
+    border-color: aqua;
+}
+
+#bottom_side_menu {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    bottom: 0;
+}
+
+.canva {
+    position: absolute;
+    padding: 0;
+    top: 0;
+    right: 0;
+    margin: 5vh;
+    width: 75vw;
+    height: 90vh;
+    border-style: groove;
+}
