@@ -1,0 +1,23 @@
+.palette_couleurs{
+    text-align: center;
+    margin-top: 1%;
+    border-top-style: solid;
+    border-radius: 0;
+    width: 100%;
+    overflow: scroll;
+}
+
+.tableau_couleur{
+    padding: 0 5mm 5mm 5mm;
+    width: 100%;
+}
+
+.cadre{
+    margin: 25vh 15vw;
+    width: 70vw;
+    height: fit-content;
+}
+
+input[type=text],input[type=password] {
+    margin: .5% 0 .5% 5%;
+}

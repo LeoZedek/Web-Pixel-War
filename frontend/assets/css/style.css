@@ -1,0 +1,40 @@
+*{
+    border-width: 1mm;
+    border-color: gray;
+    border-radius: 2mm;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body{
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.cadre{
+    border-style: solid;
+    background-color: whitesmoke;
+    border-radius: 2mm;
+}
+
+.titre_cadre{
+    text-align: center;
+}
+
+.cadre > form{
+    width: 90%;
+    margin: 5%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cadre > form > div{
+    align-self: left;
+    margin-top: 2%;
+    width: 100%;
+}
+
+input, button{
+    border-width: 0.5mm;
+    border-radius: 1mm;
+}

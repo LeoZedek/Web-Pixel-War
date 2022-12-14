@@ -1,0 +1,13 @@
+body{
+    display:flex;
+    flex-direction: row;
+    padding: 0 2vw;
+}
+
+.cadre{
+    min-height: 30vh;
+    width: 50vw;
+    padding:2mm;
+    margin:30vh 2vw;
+}
+

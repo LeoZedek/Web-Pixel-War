@@ -1,23 +1,21 @@
-body {
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+.page_canva{
+    display: flex;
+    flex-direction: row;
+    padding: 5vh 5vw;
+    height: 90vh;
+    width: 90vw;
 }
 
 .user_list {
-    position: absolute;
-    bottom: 0;
     overflow: scroll;
-    height: 25%;
-    width: 100%;
-    margin: 0;
-    border-style: dashed;
+    height: 35%;
+    border-top-style: solid;
+    border-radius: 0;
 }
 
 .user_div {
     display: flex;
     background-color: antiquewhite;
-    padding: 0;
     margin: 2%;
     height: 70px;
 }
@@ -28,39 +26,39 @@ body {
 }
 
 #color_selectors {
-    overflow: auto;
+    overflow: scroll;
     height: 40%;
-    border-style: dashed;
-    border-color: brown;
+    border-style: solid none;
+    border-radius: 0;
 }
 
 #side_menu {
-    position: absolute;
-    overflow: auto;
-    padding: 0;
-    margin: 5vh;
-    top: 0;
-    left: 0;
-    width: 15vw;
-    height: 90vh;
-    border-style: dotted;
-    border-color: aqua;
-}
-
-#bottom_side_menu {
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    bottom: 0;
+    min-width: 15%;
+    max-width: 20%;
+    width: fit-content;
+    overflow-block:clip;
 }
 
 .canva {
-    position: absolute;
-    padding: 0;
-    top: 0;
-    right: 0;
-    margin: 5vh;
-    width: 75vw;
-    height: 90vh;
-    border-style: groove;
+    width: 85%;
+    border-style: solid solid solid none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.cadre{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.bloc_titre_1{
+    height: 15%;
+}
+
+.bloc_titre_1 > p{
+    padding-left: 2mm;
+}
+
+.bloc_titre_2{
+    height: 5%;
 }

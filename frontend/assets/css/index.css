@@ -1,0 +1,29 @@
+.grand_titre{
+    text-align: center;
+}
+
+.cadre{
+    margin: 0 15%;
+    max-width: 70%;
+    height: fit-content;
+}
+
+ul{
+    padding: 0 20%;
+}
+
+li{
+    margin-top: 2mm;
+}
+
+.boutons{
+    width: 32%;
+    padding: 2mm;
+    margin: 0 34%;
+}
+
+.bouton{
+    margin: 0 5%;
+    width: 37%;
+    font-size: medium;
+}
