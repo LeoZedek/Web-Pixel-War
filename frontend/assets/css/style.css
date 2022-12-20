@@ -14,7 +14,6 @@ body{
 .cadre{
     border-style: solid;
     background-color: whitesmoke;
-    border-radius: 2mm;
 }
 
 .titre_cadre{
@@ -34,7 +33,7 @@ body{
     width: 100%;
 }
 
-input, button{
+input, button, select{
     border-width: 0.5mm;
     border-radius: 1mm;
 }

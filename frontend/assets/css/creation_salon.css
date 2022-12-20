@@ -4,20 +4,44 @@
     border-top-style: solid;
     border-radius: 0;
     width: 100%;
-    overflow: scroll;
 }
 
 .tableau_couleur{
+    margin: 5% 5% 2% 5%;
+    display: flex;
+    width: 90%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.item_couleur{
     padding: 0 5mm 5mm 5mm;
-    width: 100%;
+    width: fit-content;
 }
 
 .cadre{
     margin: 25vh 15vw;
     width: 70vw;
     height: fit-content;
+    justify-content: center;
 }
 
-input[type=text],input[type=password] {
+input[type=text],input[type=password],.select_label{
     margin: .5% 0 .5% 5%;
+}
+
+.bouton_envoi{
+    justify-content: center;
+    display: flex;
+    width: 100%; 
+    margin: 2% 0;
+}
+
+.texte_erreur{
+    margin: 0 5%;
+}
+
+select{
+    margin: .5% 0;
 }
