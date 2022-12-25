@@ -1,7 +1,11 @@
 // Auteur du fichier: Mathias Hersent
 
-// Functions ----------------------------------
+// Functions ---------------------------------------------------------------------
 function initPixels(img) {
+    /* 
+    Permet de mettre les pixels de l'image dans un tableau qui me permet d'afficher et
+    de modifier plus facilement
+    */
     const pixels = [];
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext("2d");
@@ -17,8 +21,22 @@ function initPixels(img) {
     return pixels;
 }
 
+function updatePixels(serverModifs) {
+    /*
+    Permet de mettre à jour les pixels avec les infos reçues depuis le serveur
+    */
+    for (let i = 0; i < serverModifs.length; i++) {
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][0] = serverModifs[i].color[0];
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][1] = serverModifs[i].color[1];
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][2] = serverModifs[i].color[2];
+    }
+}
+
 function adaptCoords(coords) {
-    // Transforme les coordonnées du clic de la sourie en indice pour le tableau de pixel
+    /*
+    Transforme les coordonnées du clic de la sourie en indice pour le tableau de pixel
+    Exemple: souris clic en 12, 12 ça veut dire que c'est l'indice 0, 0 du tableau
+    */
     let positionInfo = cadre_canvas.getBoundingClientRect();
     let psize = getCanvasInfo(canvas).psize;
     x = Math.ceil(coords[0] - positionInfo.x);
@@ -27,10 +45,12 @@ function adaptCoords(coords) {
 }
 
 function getCanvasInfo() {
-    // Permet de récupérer des informations concernant le canva
-    // w : largeur
-    // h : hauteur
-    // step : taille des pixels
+    /*
+    Permet de récupérer des informations concernant le canva
+    w : largeur
+    h : hauteur
+    psize : taille des pixels
+    */
     let positionInfo = cadre_canvas.getBoundingClientRect();
     let width  = Math.ceil(positionInfo.width);
     let height = Math.ceil(positionInfo.height);
@@ -45,7 +65,9 @@ function getCanvasInfo() {
 }
 
 function resizeCanvas(canvas) {
-    // Met à jour les dimensions du canva en fonction de la taille de la fenêtre
+    /*
+    Met à jour les dimensions du canva en fonction de la taille de la fenêtre
+    */
     const canvasInfo = getCanvasInfo();
 
     canvas.width  = canvasInfo.w * ratio;
@@ -56,6 +78,9 @@ function resizeCanvas(canvas) {
 }
 
 function draw(canvas, nbPixels, pixels) {
+    /*
+    Dessine les pixels sur le canva
+    */
     const canvaInfo = getCanvasInfo();
     const ctx = canvas.getContext("2d");
 
@@ -75,17 +100,20 @@ function draw(canvas, nbPixels, pixels) {
     }
 }
 
-// Main program -------------------------------
+// Main program -----------------------------------------------------------------------------------
 // On récupère le nom du canva dans l'url via le paramètre GET
 let address = window.location.search;
 let parameterList = new URLSearchParams(address);
-let canvaName = parameterList.get("name");
+let canvaName = parameterList.get("name"); // nom du canva (genre: "room4")
 
 let canvaInfo;
+// Champs de canvaInfo: colors, id, minRank, minTime, minTimeVIP, size
+// Càd: les couleurs autorisées, l'id, le privilège minimal pour pouvoir jouer, le temps
+// d'attente pour un user normal, pour un VIP, le nombre de pixel de côté
 $.ajax({
     type: 'POST',
     url: '/canva/info',
-    async: false,   // On a besoin des infos avant d'afficher le canva
+    async: false,   // On a besoin des infos avant d'afficher le canva donc on attend la réponse
     data: {"name": canvaName},
     success: function(received) {
         canvaInfo = received;
@@ -96,6 +124,7 @@ $.ajax({
 });
 console.log(canvaInfo);
 
+// Chargement de l'image stockée dans le serveur via une balise image
 let img = new Image();
 img.src = "assets/img/canvas/canva_" + canvaInfo.id + ".png";
 
@@ -104,38 +133,22 @@ const cadre_canvas = document.getElementsByClassName("canva_cadre")[0];
 const canvas = document.getElementById("canvas");
 const ratio  = window.devicePixelRatio;
 
-let pixels = [];
-let modifs = []
-let serverModifs = [];
+let pixels = []; // les pixels à afficher sur le canva
+let modifs = []; // les modifications qu'on fait en cliquant sur un pixel
+let serverModifs = []; // les modifications reçu depuis le serveur pour mettre à jour les pixels
 let firstImageLoad = true;
 resizeCanvas(canvas);
 
-// const socket = new WebSocket('ws://localhost:3000/canva/websocket');
-
-// socket.onopen = function(event) {
-//   console.log('WebSocket connection established');
-// };
-
-// socket.onmessage = function(event) {
-//   console.log('received:', event.data);
-// };
-
-// socket.onclose = function(event) {
-//   console.log('WebSocket connection closed');
-// };
-
-// socket.onerror = function(error) {
-//   console.error('WebSocket error:', error);
-// };
-
 // Events listeners ---------------------------
 window.addEventListener('resize', () => {
+    // Quand la fenêtre bouge on redimensionne le canva et on le redessine
     resizeCanvas(canvas);
     draw(canvas, nbPixels, pixels);
 });
 
 function doAjax() {
     if (modifs.length !== 0) {
+        // On envoi les modifs faites au serveur s'il y en a
         $.ajax({
             type: 'POST',
             url: '/canva/update',
@@ -145,7 +158,9 @@ function doAjax() {
             }
         });
     }
-    modifs = [];
+    modifs = []; // Les modifs sont envoyées, on réinitialise
+
+    // On demande au serveur les dernières modifs qu'un autre user à potentiellement fait
     $.ajax({
         type: 'POST',
         url: '/canva/getlastmodifs',
@@ -173,34 +188,20 @@ function doAjax() {
     });
 }
 
-function updatePixels(serverModifs) {
-    for (let i = 0; i < serverModifs.length; i++) {
-        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][0] = serverModifs[i].color[0];
-        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][1] = serverModifs[i].color[1];
-        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][2] = serverModifs[i].color[2];
-    }
-}
-
 img.addEventListener("load", () => {
+    // Une fois l'image chargée on met à jour les pixels et on les dessine 
     pixels = initPixels(img);
     draw(canvas, nbPixels, pixels);
 
+    // Une fois que l'image initiale est chargée on commence la communication des modifs avec le serveur
     if (firstImageLoad) {
         firstImageLoad = false;
-        setTimeout(doAjax, 1000);
-            // let timestamp = (new Date()).getTime();
-            // img.src = "/assets/img/canvas/canva_" + canvaInfo.id + ".png" + '?_=' + timestamp;
-            // pixels = initPixels(img);
-
-            // draw(canvas, nbPixels, pixels);
-            // console.log("update");
-        // }, 1000);
+        setTimeout(doAjax, 2000); // Mis à jour toutes les 2 secondes
     }
 });
 
 canvas.addEventListener("mousedown", (event) => {
+    // Quand le user clique
     coords = adaptCoords([event.clientX, event.clientY]);
     modifs.push([coords[0], coords[1], [255, 0, 0]]);
-    pixels[coords[1]*nbPixels + coords[0]] = [255, 0, 0];
-    draw(canvas, nbPixels, pixels);
 });
