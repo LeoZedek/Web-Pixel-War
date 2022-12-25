@@ -12,58 +12,6 @@ const db = new sqlite3.Database('./db/test.sqlite', (err) => {
     console.log('Connected to the database!');
 });
 
-router.post('/', (req, res) => {
-
-	let data = req.body;
-	let id_canva = data["id"];
-
-	const colors = [];
-
-	if (id_canva != null) {
-
-		db.serialize(() => {
-			const statement = db.prepare("SELECT canvaName, colorStats, nbModif FROM canvas WHERE id=?;");
-
-			statement.get(id_canva, (err, result) => {
-				if (err) {
-					console.err(err.message);
-				}
-				else {
-					if (result != null) {
-						let canva_name = result["canvaName"];
-						let color_stats = result["colorStats"];
-						let nb_modif = result["nbModif"];
-
-						res.render("stats_salon.ejs", {canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
-					}
-					else {
-						res.status(406).end('<p>Wrong credentials! <a href="/"><button>Try again!</button></a></p>');
-					}
-				}
-			})
-
-			statement.finalize();
-
-/*			db.all("SELECT * FROM colors;", (err, rows) => {
-            if (err) {
-                next(err);
-            } else {
-                for (row in rows) {
-                    colors.push({ color: rows[row].colorCode, id: rows[row].id - 1 });
-                }
-            }
-            res.json(colors);
-        });*/
-
-		})
-	}
-
-	else {
-		console.err("id_canva pas valable");
-	}
-
-})
-
 // Seulement pour tester, à retirer plus tard
 
 router.get('/', (req, res) => {
@@ -128,6 +76,24 @@ router.post('/get_statistics', (req, res) => {
 	else {
 		console.log("id_canva pas valable");
 	}
+})
+
+router.post('/', (req, res) => {
+	let data = req.body;
+	let id_canva = data["id"];
+	
+	res.render("stats_salon.ejs", {id_canva : id_canva});
+
+})
+
+// Seulement pour tester, à retirer plus tard
+
+router.get('/', (req, res) => {
+	let data = req.query;
+	let id_canva = data["id"];
+	
+	res.render("stats_salon.ejs", {id_canva : id_canva});
+
 })
 
 module.exports = router;
