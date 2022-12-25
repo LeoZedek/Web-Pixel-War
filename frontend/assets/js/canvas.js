@@ -203,5 +203,8 @@ img.addEventListener("load", () => {
 canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
     coords = adaptCoords([event.clientX, event.clientY]);
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     modifs.push([coords[0], coords[1], [255, 0, 0]]);
 });
