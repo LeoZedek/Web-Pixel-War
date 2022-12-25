@@ -106,8 +106,27 @@ const ratio  = window.devicePixelRatio;
 
 let pixels = [];
 let modifs = []
+let serverModifs = [];
 let firstImageLoad = true;
 resizeCanvas(canvas);
+
+// const socket = new WebSocket('ws://localhost:3000/canva/websocket');
+
+// socket.onopen = function(event) {
+//   console.log('WebSocket connection established');
+// };
+
+// socket.onmessage = function(event) {
+//   console.log('received:', event.data);
+// };
+
+// socket.onclose = function(event) {
+//   console.log('WebSocket connection closed');
+// };
+
+// socket.onerror = function(error) {
+//   console.error('WebSocket error:', error);
+// };
 
 // Events listeners ---------------------------
 window.addEventListener('resize', () => {
@@ -115,40 +134,72 @@ window.addEventListener('resize', () => {
     draw(canvas, nbPixels, pixels);
 });
 
+function doAjax() {
+    if (modifs.length !== 0) {
+        $.ajax({
+            type: 'POST',
+            url: '/canva/update',
+            data: {"id": canvaInfo.id, "x": modifs[0][0], "y": modifs[0][1], "color": modifs[0][2]},
+            error: function() {
+                console.log('La requête n a pas abouti');
+            }
+        });
+    }
+    modifs = [];
+    $.ajax({
+        type: 'POST',
+        url: '/canva/getlastmodifs',
+        data: {"id": canvaInfo.id},
+        // async: true,
+        timeout: 500,
+        beforeSend: function (data) {
+            // Schedule the next
+            console.log("sent");
+        },
+        success: function(received) {
+            serverModifs = JSON.parse(received);
+            console.log(serverModifs);
+        },
+        complete: function (data) {
+            // Schedule the next
+            console.log("complete");
+            updatePixels(serverModifs);
+            draw(canvas, nbPixels, pixels);
+            setTimeout(doAjax, 1000);
+        },
+        error: function() {
+            console.log('La requête n a pas abouti');
+        }
+    });
+}
+
+function updatePixels(serverModifs) {
+    for (let i = 0; i < serverModifs.length; i++) {
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][0] = serverModifs[i].color[0];
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][1] = serverModifs[i].color[1];
+        pixels[parseInt(serverModifs[i].y)*nbPixels + parseInt(serverModifs[i].x)][2] = serverModifs[i].color[2];
+    }
+}
+
 img.addEventListener("load", () => {
     pixels = initPixels(img);
     draw(canvas, nbPixels, pixels);
 
     if (firstImageLoad) {
         firstImageLoad = false;
-        setInterval(() => {
-            if (modifs.length !== 0) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/canva/update',
-                    data: {"id": canvaInfo.id, "x": modifs[0][0], "y": modifs[0][1], "color": modifs[0][2]},
-                    success: function(received) {
-                        
-                    },
-                    error: function() {
-                        console.log('La requête n a pas abouti');
-                    }
-                });
-            }
-            modifs = [];
-            let timestamp = (new Date()).getTime();
-            img.src = "/assets/img/canvas/canva_" + canvaInfo.id + ".png" + '?_=' + timestamp;
-            console.log(img);
-            pixels = initPixels(img);
-            draw(canvas, nbPixels, pixels);
-            console.log("update");
-        }, 1000);
+        setTimeout(doAjax, 1000);
+            // let timestamp = (new Date()).getTime();
+            // img.src = "/assets/img/canvas/canva_" + canvaInfo.id + ".png" + '?_=' + timestamp;
+            // pixels = initPixels(img);
+
+            // draw(canvas, nbPixels, pixels);
+            // console.log("update");
+        // }, 1000);
     }
 });
 
 canvas.addEventListener("mousedown", (event) => {
     coords = adaptCoords([event.clientX, event.clientY]);
-    console.log(coords);
     modifs.push([coords[0], coords[1], [255, 0, 0]]);
     pixels[coords[1]*nbPixels + coords[0]] = [255, 0, 0];
     draw(canvas, nbPixels, pixels);
