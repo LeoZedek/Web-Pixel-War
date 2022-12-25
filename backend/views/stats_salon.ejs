@@ -17,8 +17,8 @@
 
     <div id = "app">
         <div class="cadre">
-            <h1>{{canva_name}}</h1>
-            <h2 class="titre_cadre">Statistiques</h2>
+            <h1>Canva's name : {{canva_name}}</h1>
+            <h2 class="titre_cadre">Statistics</h2>
 
             <div class="ligne_texte">Number of modified pixels : {{number_modifications}}</div>
             <div class="ligne_texte">Colored pixels :</div>
@@ -27,6 +27,8 @@
     </div>
 
     <script type="text/javascript">
+        // Auteur : Léo Zedek
+
 
         function color_stats_string_to_json(color_stats) {
             const colors = color_stats.split(",");
@@ -78,22 +80,25 @@
                     colors_name.push("Color " + colors_code_by_id[id_color]);
                 }
 
-                Plotly.newPlot("histogram", [
-                {
-                    histfunc : "sum",
-                    y : numbers,
-                    x : colors_name,
-                    type : "histogram",
-                    marker : {
-                        color : colors_code,
-                        line : {
-                            width : 1,
-                            color : "black",
-                        }
+                let data = [
+                    {
+                        histfunc : "sum",
+                        y : numbers,
+                        x : colors_name,
+                        type : "histogram",
+                        marker : {
+                            color : colors_code,
+                            line : {
+                                width : 1,
+                                color : "black",
+                            }
+                        },
                     },
-                },
+                ];
 
-                ]);
+                let layout = {};
+
+                Plotly.newPlot("histogram", data, layout, {staticPlot: true});
 
                 
             },
