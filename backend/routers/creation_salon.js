@@ -45,8 +45,8 @@ const createCanva = (canvaSize, color_selected) => {
             const out = fs.createWriteStream("../frontend/assets/img/canvas/canva_" + canvaIndex + ".png");
             stream.pipe(out);
 
-            const statement3 = db.prepare("INSERT INTO canvas (id, name, colorStats) VALUES (?,?,?)");
-            statement3.run([canvaIndex, "canva_" + canvaIndex + ".png", colorStats], (err) => {
+            const statement3 = db.prepare("INSERT INTO canvas (id, name, colorStats, size) VALUES (?,?,?,?)");
+            statement3.run([canvaIndex, "canva_" + canvaIndex + ".png", colorStats, canvaSize], (err) => {
                 if (err) {
                     console.log(err.message);
                 }
