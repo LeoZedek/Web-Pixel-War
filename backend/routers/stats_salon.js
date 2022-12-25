@@ -18,7 +18,7 @@ router.post('/get_statistics', (req, res) => {
 
 	let canva_name, color_stats, nb_modif;
 	const colors = {};
-
+	let erreur_database = false;
 
 	if (id_canva != null) {
 
@@ -28,6 +28,7 @@ router.post('/get_statistics', (req, res) => {
 			statement.get(id_canva, (err, result) => {
 				if (err) {
 					console.err(err.message);
+					erreur_database = true;
 				}
 				else {
 					if (result != null) {
@@ -40,7 +41,8 @@ router.post('/get_statistics', (req, res) => {
 						console.log(nb_modif);
 					}
 					else {
-						res.status(406).end('<p>Wrong credentials! <a href="/"><button>Try again!</button></a></p>');
+						console.error("Id not found : " + id_canva);
+						erreur_database = true;
 					}
 				}
 			})
@@ -48,22 +50,22 @@ router.post('/get_statistics', (req, res) => {
 			statement.finalize();
 
 			db.all("SELECT * FROM colors;", (err, rows) => {
-	            if (err) {
-	                next(err);
+	            if (err || erreur_database) {
+	                console.error("Erreur Database");
 	            } else {
 	                for (row in rows) {
 	                    colors[rows[row].id] = rows[row].colorCode;
 	                }
-	            }
-	            //console.log({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
-				res.json({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
-		
 
+	                //console.log({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
+					res.json({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
+	            }
 	        });
 		})
 	}
 
 	else {
+		erreur_database = true;
 		console.log("id_canva pas valable");
 	}
 })
