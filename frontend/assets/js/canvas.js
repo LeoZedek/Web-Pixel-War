@@ -139,6 +139,26 @@ let serverModifs = []; // les modifications reçu depuis le serveur pour mettre 
 let firstImageLoad = true;
 resizeCanvas(canvas);
 
+const socket = new WebSocket('ws://localhost:8080');
+
+socket.onopen = function(event) {
+    console.log('WebSocket connection established');
+};
+
+socket.onmessage = function(event) {
+    console.log('received:', JSON.parse(event.data));
+    updatePixels(JSON.parse(event.data));
+    draw(canvas, nbPixels, pixels);
+};
+
+socket.onclose = function(event) {
+    console.log('WebSocket connection closed');
+};
+
+socket.onerror = function(error) {
+    console.error('WebSocket error:', error);
+};
+
 // Events listeners ---------------------------
 window.addEventListener('resize', () => {
     // Quand la fenêtre bouge on redimensionne le canva et on le redessine
@@ -161,9 +181,10 @@ function doAjax() {
     modifs = []; // Les modifs sont envoyées, on réinitialise
 
     // On demande au serveur les dernières modifs qu'un autre user à potentiellement fait
+    let timestamp = (new Date()).getTime();
     $.ajax({
         type: 'POST',
-        url: '/canva/getlastmodifs',
+        url: '/canva/getlastmodifs'+ '?_=' + timestamp,
         data: {"id": canvaInfo.id},
         // async: true,
         timeout: 500,
@@ -196,7 +217,7 @@ img.addEventListener("load", () => {
     // Une fois que l'image initiale est chargée on commence la communication des modifs avec le serveur
     if (firstImageLoad) {
         firstImageLoad = false;
-        setTimeout(doAjax, 2000); // Mis à jour toutes les 2 secondes
+        // setTimeout(doAjax, 2000); // Mis à jour toutes les 2 secondes
     }
 });
 
@@ -207,4 +228,6 @@ canvas.addEventListener("mousedown", (event) => {
     // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     modifs.push([coords[0], coords[1], [255, 0, 0]]);
+    socket.send(JSON.stringify({id: canvaInfo.id, x: modifs[0][0], y: modifs[0][1], color: modifs[0][2]}));
+    modifs = [];
 });
