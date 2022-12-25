@@ -12,16 +12,6 @@ const db = new sqlite3.Database('./db/test.sqlite', (err) => {
     console.log('Connected to the database!');
 });
 
-// Seulement pour tester, à retirer plus tard
-
-router.get('/', (req, res) => {
-	let data = req.query;
-	let id_canva = data["id"];
-	
-	res.render("stats_salon.ejs", {id_canva : id_canva});
-
-})
-
 router.post('/get_statistics', (req, res) => {
 	let data = req.body;
 	let id_canva = data["id"];
@@ -65,7 +55,7 @@ router.post('/get_statistics', (req, res) => {
 	                    colors[rows[row].id] = rows[row].colorCode;
 	                }
 	            }
-	            console.log({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
+	            //console.log({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
 				res.json({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
 		
 
