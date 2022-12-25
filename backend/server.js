@@ -38,7 +38,8 @@ app.use('/create_room', create_room);
 const canva = require('./routers/canva');
 app.use('/canva', canva);
 
-
+const stats_salon = require("./routers/stats_salon");
+app.use("/room_statistics", stats_salon);
 
 // run the server
 app.listen(port, () => {
