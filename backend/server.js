@@ -41,6 +41,9 @@ app.use('/canva', canva);
 const stats_salon = require("./routers/stats_salon");
 app.use("/room_statistics", stats_salon);
 
+const stats_user = require("./routers/profil_user");
+app.use("/user_statistics", stats_user);
+
 // run the server
 app.listen(port, () => {
 	// callback executed when the server is launched
