@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/plotly-2.16.1.min.js"></script>
+    
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/stats_salon.css">
+    <title>Room statistics</title>
+</head>
+
+<body>
+
+    <div id = "app">
+        <div class="cadre">
+            <h1>{{canva_name}}</h1>
+            <h2 class="titre_cadre">Statistiques</h2>
+
+            <div class="ligne_texte">Number of modified pixels : {{number_modifications}}</div>
+            <div class="ligne_texte">Colored pixels :</div>
+            <div id = "histogram"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        function color_stats_string_to_json(color_stats) {
+            const colors = color_stats.split(",");
+            const result = {};
+
+            for (index in colors) {
+                const color = colors[index].split(":");
+
+                const id_color = color[0];
+                const number_color = color[1];
+
+                result[id_color] = number_color;
+
+            }
+
+            return result;
+        }
+        
+        // Get ESJ variable
+        let id_canva = '<%= id_canva%>';
+
+        const app = new Vue({
+            el:"#app",
+            data: {
+                number_modifications: null,
+                canva_name: "",
+            },
+        });
+
+        // AJAX request to get all the statistics of the room and the colors.
+        $.ajax({
+            type: "POST",
+            url: "/room_statistics/get_statistics",
+            data : {id : id_canva},
+            success: function(received_data) {
+                app._data.canva_name = received_data["canva_name"];
+                app._data.number_modifications = received_data["nb_modif"];
+
+                let color_stats = color_stats_string_to_json(received_data["color_stats"]);
+                let colors_code_by_id = received_data["colors"];
+
+                let numbers = [];
+                let colors_code = [];
+                let colors_name = [];
+
+                for (id_color in color_stats) {
+                    numbers.push(color_stats[id_color]);
+                    colors_code.push(colors_code_by_id[id_color]);
+                    colors_name.push("Color " + colors_code_by_id[id_color]);
+                }
+
+                Plotly.newPlot("histogram", [
+                {
+                    histfunc : "sum",
+                    y : numbers,
+                    x : colors_name,
+                    type : "histogram",
+                    marker : {
+                        color : colors_code,
+                        line : {
+                            width : 1,
+                            color : "black",
+                        }
+                    },
+                },
+
+                ]);
+
+                
+            },
+            error: function() {
+              console.log("Error AJAX");
+            }
+          });
+
+    </script>
+
+</body>
+
+</html>
