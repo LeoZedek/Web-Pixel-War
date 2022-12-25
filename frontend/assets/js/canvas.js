@@ -139,6 +139,7 @@ let serverModifs = []; // les modifications reçu depuis le serveur pour mettre 
 let firstImageLoad = true;
 resizeCanvas(canvas);
 
+// Communication avec un socket lié au serveur pour envoyer et recevoir les modifs
 const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function(event) {
@@ -166,59 +167,10 @@ window.addEventListener('resize', () => {
     draw(canvas, nbPixels, pixels);
 });
 
-function doAjax() {
-    if (modifs.length !== 0) {
-        // On envoi les modifs faites au serveur s'il y en a
-        $.ajax({
-            type: 'POST',
-            url: '/canva/update',
-            data: {"id": canvaInfo.id, "x": modifs[0][0], "y": modifs[0][1], "color": modifs[0][2]},
-            error: function() {
-                console.log('La requête n a pas abouti');
-            }
-        });
-    }
-    modifs = []; // Les modifs sont envoyées, on réinitialise
-
-    // On demande au serveur les dernières modifs qu'un autre user à potentiellement fait
-    let timestamp = (new Date()).getTime();
-    $.ajax({
-        type: 'POST',
-        url: '/canva/getlastmodifs'+ '?_=' + timestamp,
-        data: {"id": canvaInfo.id},
-        // async: true,
-        timeout: 500,
-        beforeSend: function (data) {
-            // Schedule the next
-            console.log("sent");
-        },
-        success: function(received) {
-            serverModifs = JSON.parse(received);
-            console.log(serverModifs);
-        },
-        complete: function (data) {
-            // Schedule the next
-            console.log("complete");
-            updatePixels(serverModifs);
-            draw(canvas, nbPixels, pixels);
-            setTimeout(doAjax, 1000);
-        },
-        error: function() {
-            console.log('La requête n a pas abouti');
-        }
-    });
-}
-
 img.addEventListener("load", () => {
     // Une fois l'image chargée on met à jour les pixels et on les dessine 
     pixels = initPixels(img);
     draw(canvas, nbPixels, pixels);
-
-    // Une fois que l'image initiale est chargée on commence la communication des modifs avec le serveur
-    if (firstImageLoad) {
-        firstImageLoad = false;
-        // setTimeout(doAjax, 2000); // Mis à jour toutes les 2 secondes
-    }
 });
 
 canvas.addEventListener("mousedown", (event) => {
