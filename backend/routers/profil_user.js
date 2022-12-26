@@ -1,4 +1,4 @@
-// Auteur : Léo Zedek
+// Auteur du fichier : Léo Zedek
 
 const express = require('express');
 const router = express.Router();
@@ -16,7 +16,7 @@ router.post('/get_statistics', (req, res) => {
 	let data = req.body;
 	let id_user = data["id"];
 
-	let pseudo, pwd_hash, vip_level, color_stats, nb_modif;
+	let pseudo, pwd_hash, vip_level, color_stats, nb_modif, avatar_id;
 	const colors = {};
 	let error_database = false;
 
@@ -24,7 +24,7 @@ router.post('/get_statistics', (req, res) => {
 	if (id_user != null) {
 
 		db.serialize(() => {
-			const statement = db.prepare("SELECT pseudo, pwdHash, vipLevel, colorStats, nbModif FROM user WHERE id=?;");
+			const statement = db.prepare("SELECT pseudo, pwdHash, vipLevel, avatarId, colorStats, nbModif FROM user WHERE id=?;");
 
 			statement.get(id_user, (err, result) => {
 				if (err) {
@@ -36,14 +36,9 @@ router.post('/get_statistics', (req, res) => {
 						pseudo = result["pseudo"];
 						pwd_hash = result["pwdHash"];
 						vip_level = result["vipLevel"];
+						avatar_id = result["avatarId"];
 						color_stats = result["colorStats"];
 						nb_modif = result["nbModif"];
-						console.log("ljflq");
-						console.log(pseudo);
-						console.log(pwd_hash);
-						console.log(vip_level);
-						console.log(color_stats);
-						console.log(nb_modif);
 					}
 					else {
 						error_database = true;
@@ -67,6 +62,7 @@ router.post('/get_statistics', (req, res) => {
 						pseudo : pseudo,
 						pwd_hash : pwd_hash,
 						vip_level : vip_level,
+						avatar_id : avatar_id,
 						color_stats : color_stats,
 						nb_modif : nb_modif
 					});
