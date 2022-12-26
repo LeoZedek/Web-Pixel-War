@@ -11,6 +11,9 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+## SQL Database
+*.db
+
 ## Png images
 *.png
 
