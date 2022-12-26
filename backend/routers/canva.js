@@ -74,7 +74,7 @@ router.post('/info', function (req, res) {
     let data = req.body;
     console.log(data.name);
     db.serialize(() => {
-        const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.canvasId WHERE rooms.name = ?;");
+        const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
         statement.get(data.name, (err, result) => {
             if (err) {
                 console.log(err.message);
