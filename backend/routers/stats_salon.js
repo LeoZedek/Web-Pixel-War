@@ -1,11 +1,11 @@
-// Auteur : Léo Zedek
+// Auteur du fichier : Léo Zedek
 
 const express = require('express');
 const router = express.Router();
 
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('./db/test.sqlite', (err) => {
+const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
     if (err) {
         console.error(err.message);
     }
