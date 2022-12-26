@@ -12,6 +12,11 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
     console.log('Connected to the database!');
 });
 
+router.post("/update_profil", (req, res) => {
+	let data = req.body;
+	
+})
+
 router.post('/get_statistics', (req, res) => {
 	let data = req.body;
 	let id_user = data["id"];

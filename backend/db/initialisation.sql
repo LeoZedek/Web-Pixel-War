@@ -17,6 +17,7 @@ CREATE TABLE rooms
 	creatorId TEXT,
 	minimumTime INTEGER,
 	minimumTimeVIP INTEGER,
+	minimumRank INTEGER,
 	history INTEGER
 );
 
@@ -24,6 +25,7 @@ CREATE TABLE canvas
 (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	canvaName TEXT,
+	size INTEGER,
 	colorStats TEXT,
 	nbModif INTEGER
 );
