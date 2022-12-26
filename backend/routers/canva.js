@@ -62,7 +62,7 @@ server.on('connection', function(socket) {
 });
 
 // connecting an existing database (handling errors)
-const db = new sqlite3.Database('./db/test.sqlite', (err) => {
+const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
     if (err) {
         console.error(err.message);
     }
