@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/plotly-2.16.1.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/profil_user.css">
+    <title>User profile</title>
+</head>
+
+<body>
+    <div id = "app">
+
+        <div class="cadre">
+            <h2 class="titre_cadre">Informations</h2>
+            <img v-bind:src="avatarPath" class="image">
+            <br>
+            <div class="ligne_texte">
+                Status : {{vipLevel}}
+            </div>
+            <div class="ligne_texte">
+                Username :
+                <input type="text" class="entree_texte" placeholder="current_username" v-bind:value="pseudo">
+            </div>
+            <div class="ligne_texte">
+                Password : 
+                <input type="text" class="entree_mot_de_passe" placeholder="current_pwd" v-bind:value="pwdHash">
+            </div>
+            <div class="ligne_texte"> 
+                <input type="button" class="bouton" value="Edit my info">
+            </div>
+            <!--<a href="/user_update" class="bouton" type="button">Edit my info</a>-->
+
+        </div>
+
+        <div class="cadre">
+            <h2 class="titre_cadre"> Statistics</h2>
+
+            <div class="ligne_texte">Number of pixels added : {{number_modifications}}</div>
+            <div class="ligne_texte">Colored pixels :</div>
+            <div id = "histogram"></div>
+        </div>
+    </div>
+    
+
+    <script type="text/javascript">
+        // Auteur de la balise script : Léo Zedek
+
+
+        function color_stats_string_to_json(color_stats) {
+            const colors = color_stats.split(",");
+            const result = {};
+
+            for (index in colors) {
+                const color = colors[index].split(":");
+
+                const id_color = color[0];
+                const number_color = color[1];
+
+                result[id_color] = number_color;
+
+            }
+
+            return result;
+        }
+        
+        // Get ESJ variable
+        let id_user = '<%= id_user%>';
+
+        const app = new Vue({
+            el:"#app",
+            data: {
+                number_modifications: null,
+                pseudo: "",
+                pwdHash : "",
+                vipLevel : "",
+                avatarPath : "assets/img/profile.png",
+            },
+        });
+
+        const vip_level_name = {
+            1 : "Normal user",
+            2 : "VIP user",
+        };
+
+        // AJAX request to get all the statistics of the user.
+        $.ajax({
+            type: "POST",
+            url: "/user_statistics/get_statistics",
+            data : {id : id_user},
+            success: function(received_data) {
+                app._data.pseudo = received_data["pseudo"];
+                app._data.pwdHash = received_data["pwd_hash"];
+                app._data.number_modifications = received_data["nb_modif"];
+                app._data.vipLevel = vip_level_name[received_data["vip_level"]];
+
+                //app._data.avatarPath = "assets/img/avatar_" + received_data["avatar_id"] + ".png";
+
+                let color_stats = color_stats_string_to_json(received_data["color_stats"]);
+                let colors_code_by_id = received_data["colors"];
+
+                let numbers = [];
+                let colors_code = [];
+                let colors_name = [];
+
+                for (id_color in color_stats) {
+                    numbers.push(color_stats[id_color]);
+                    colors_code.push(colors_code_by_id[id_color]);
+                    colors_name.push("Color " + colors_code_by_id[id_color]);
+                }
+
+                let data = [
+                    {
+                        histfunc : "sum",
+                        y : numbers,
+                        x : colors_name,
+                        type : "histogram",
+                        marker : {
+                            color : colors_code,
+                            line : {
+                                width : 1,
+                                color : "black",
+                            }
+                        },
+                    },
+                ];
+
+                let layout = {};
+
+                Plotly.newPlot("histogram", data, layout, {staticPlot: true});
+
+                
+            },
+            error: function() {
+              console.log("Error AJAX");
+            }
+          });
+
+    </script>
+
+</body>
+
+</html>
