@@ -122,6 +122,9 @@ $.ajax({
         console.log('La requête n a pas abouti');
     }
 });
+if (canvaInfo === undefined || canvaInfo === null) {
+    alert('The room ' + canvaName + ' does not exist');
+}
 console.log(canvaInfo);
 
 // Chargement de l'image stockée dans le serveur via une balise image

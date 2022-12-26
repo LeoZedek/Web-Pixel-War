@@ -79,7 +79,7 @@ router.post('/info', function (req, res) {
             if (err) {
                 console.log(err.message);
                 res.json(null);
-            } else {
+            } else if (result !== undefined) {
                 console.log(result);
                 let info = {};
                 info.id = result.id;
@@ -89,6 +89,8 @@ router.post('/info', function (req, res) {
                 info.minTimeVIP = result.minimumTimeVIP;
                 info.minRank = result.minimumRank;
                 res.json(info);
+            } else {
+                res.json(null);
             }
         });
     });
