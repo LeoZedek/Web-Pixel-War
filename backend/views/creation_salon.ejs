@@ -26,6 +26,7 @@
         <br />
         <label class="select_label" for="select_size">Canva size</label>
         <select v-model="canva_size" name="select_size">
+            <option value="25">25x25</option>
             <option value="100">100x100</option>
             <option value="200">200x200</option>
             <option value="500">500x500</option>
@@ -88,7 +89,7 @@
             name_exists: false,
             sql_err: false,
             minimum_rank: 0,
-            canva_size: "100",
+            canva_size: "25",
             time: 60,
             vip_time: 30
         },
