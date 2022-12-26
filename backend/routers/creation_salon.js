@@ -6,7 +6,7 @@ const { createCanvas } = require('canvas');
 const fs = require('fs');
 
 // connecting an existing database (handling errors)
-const db = new sqlite3.Database('./db/test.sqlite', (err) => {
+const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -45,7 +45,7 @@ const createCanva = (canvaSize, color_selected) => {
             const out = fs.createWriteStream("../frontend/assets/img/canvas/canva_" + canvaIndex + ".png");
             stream.pipe(out);
 
-            const statement3 = db.prepare("INSERT INTO canvas (id, name, colorStats, size) VALUES (?,?,?,?)");
+            const statement3 = db.prepare("INSERT INTO canvas (id, canvaName, colorStats, size) VALUES (?,?,?,?)");
             statement3.run([canvaIndex, "canva_" + canvaIndex + ".png", colorStats, canvaSize], (err) => {
                 if (err) {
                     console.log(err.message);
