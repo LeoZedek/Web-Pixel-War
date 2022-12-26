@@ -23,7 +23,7 @@ router.post('/get_statistics', (req, res) => {
 	if (id_canva != null) {
 
 		db.serialize(() => {
-			const statement = db.prepare("SELECT name, colorStats, nbModif FROM canvas WHERE id=?;");
+			const statement = db.prepare("SELECT CanvaName, colorStats, nbModif FROM canvas WHERE id=?;");
 
 			statement.get(id_canva, (err, result) => {
 				if (err) {

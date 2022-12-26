@@ -3,6 +3,10 @@
 const express = require('express');
 const router = express.Router();
 
+// add data to req.body (for POST requests)
+router.use(express.urlencoded({ extended: true }));
+
+
 const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
@@ -14,7 +18,17 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 
 router.post("/update_profil", (req, res) => {
 	let data = req.body;
-	
+
+	let id_user = data.id_user;
+	let new_pseudo = data.new_pseudo;
+	let new_password = data.new_password;
+
+	const statement = db.prepare("UPDATE user SET pseudo = ?, pwdHash = ? where id = ?;");
+
+	statement.run(new_pseudo, new_password, id_user);
+
+	statement.finalize();
+	res.status(200).end();
 })
 
 router.post('/get_statistics', (req, res) => {
