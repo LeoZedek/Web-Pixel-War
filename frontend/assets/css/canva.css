@@ -39,9 +39,14 @@
     overflow-block:clip;
 }
 
-.canva {
+.canva_cadre {
     width: 85%;
     border-style: solid solid solid none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#canvas {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
