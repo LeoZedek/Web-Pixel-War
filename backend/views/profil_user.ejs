@@ -17,25 +17,23 @@
     <div id = "app">
 
         <div class="cadre">
-            <h2 class="titre_cadre">Informations</h2>
-            <img v-bind:src="avatarPath" class="image">
-            <br>
-            <div class="ligne_texte">
-                Status : {{vipLevel}}
-            </div>
-            <div class="ligne_texte">
-                Username :
-                <input type="text" class="entree_texte" placeholder="current_username" v-bind:value="pseudo">
-            </div>
-            <div class="ligne_texte">
-                Password : 
-                <input type="text" class="entree_mot_de_passe" placeholder="current_pwd" v-bind:value="pwdHash">
-            </div>
-            <div class="ligne_texte"> 
-                <input type="button" class="bouton" value="Edit my info">
-            </div>
-            <!--<a href="/user_update" class="bouton" type="button">Edit my info</a>-->
-
+                <h2 class="titre_cadre">Informations</h2>
+                <img v-bind:src="avatarPath" class="image">
+                <br>
+                <div class="ligne_texte">
+                    Status : {{vipLevel}}
+                </div>
+                <div class="ligne_texte">
+                    Username :
+                    <input type="text" class="new_pseudo" placeholder="current_username" v-model="pseudo">
+                </div>
+                <div class="ligne_texte">
+                    Password : 
+                    <input type="text" class="new_password" placeholder="current_pwd" v-model="pwdHash">
+                </div>
+                <div class="ligne_texte"> 
+                    <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
+                </div>
         </div>
 
         <div class="cadre">
@@ -80,6 +78,28 @@
                 pwdHash : "",
                 vipLevel : "",
                 avatarPath : "assets/img/profile.png",
+            },
+
+            methods: {
+                update_profil() {
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/user_statistics/update_profil",
+                        data: {
+                            id_user : id_user,
+                            new_pseudo : app._data.pseudo,
+                            new_password : app._data.pwdHash
+                        },
+                        success: function(received_data) {
+                            alert("Profile updated successfully !");
+                        },
+                        error: function() {
+                            alert("Error during updating profile");
+                        }
+                    });
+
+                }
             },
         });
 
