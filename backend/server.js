@@ -54,6 +54,9 @@ app.use("/room_statistics", stats_salon);
 const stats_user = require("./routers/profil_user");
 app.use("/user_statistics", stats_user);
 
+const connexion_creation_compte = require('./routers/connexion_creation_compte')
+app.use('/', connexion_creation_compte)
+
 // run the server
 app.listen(port, () => {
 	// callback executed when the server is launched

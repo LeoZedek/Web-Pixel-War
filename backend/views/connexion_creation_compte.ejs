@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/connexion_creation_compte.css">
+	<title>Connexion/Creation compte</title>
+</head>
+
+<body>
+	<div class="cadre">
+		<h2 class="titre_cadre">Connexion</h2>
+		<br>
+		<form action="/signin" method="post" role="form">
+			<div><input type="text" name="username_signin"  id="username_signin" class="entree_texte" placeholder="username" required></div>
+			<div><input type="password" name="password_signin"  id="password_signin" class="entree_texte" placeholder="password" required></div>
+			<div><button type="submit" id="submit_signin" class="entree_submit">Sign in</button></div>
+		</form>
+		<br>
+
+	</div>
+	<div class="cadre" name="logsignup" id="logsignup">
+		<h2 class="titre_cadre">Join Us</h2>
+		<br>
+		<form action="/signup" method="post" role="form">
+			<div><input v-on:keyup="checkValidPseudo()" type="text" name="username_signup" id="username_signup" class="entree_texte" placeholder="username" required></div>
+			<div><input type="password" name="password_signup" id="password_signup" class="entree_texte" placeholder="password" required></div>
+			<div><input type="password" name="password_confirm_signup" id="password_confirm_signup" class="entree_texte" placeholder="confirm the password" required></div>
+			<h3 v-if="notValidPseudo" style="color: red;" class="ligne_texte">this name is already taken</h3>
+			<div v-if="!notValidPseudo" class="button_div"><button v-if="!notValidPseudo" type="submit" id="submit_signup" class="entree_submit">Sign up</button></div>
+		</form>
+		<br>
+
+	</div>
+
+
+	<script src="assets/js/vue.js"></script>
+  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		const app=new Vue({
+			el:"#logsignup",
+			data:{
+				notValidPseudo : false
+			},
+			methods:{
+				checkValidPseudo: function() {
+					var pseudoToVerify = "pseudo=" + $("#username_signup").val()
+					$.ajax({
+						type: "POST",
+						url: "/verify",
+						data: pseudoToVerify,
+						success: function(sucessResponse) {
+							app.notValidPseudo = sucessResponse
+							
+						}
+					})
+				}
+			}
+
+		})
+	</script>
+
+
+</body>
+
+</html>
