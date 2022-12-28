@@ -39,8 +39,8 @@ function adaptCoords(coords) {
     */
     let positionInfo = cadre_canvas.getBoundingClientRect();
     let psize = getCanvasInfo(canvas).psize;
-    x = Math.ceil(coords[0] - positionInfo.x);
-    y = Math.ceil(coords[1] - positionInfo.y);
+    x = Math.ceil(coords[0] - (positionInfo.x + getCanvasInfo(canvas).offsetX));
+    y = Math.ceil(coords[1] - (positionInfo.y + getCanvasInfo(canvas).offsetY));
     return [(x - (x % psize)) / psize, (y - (y % psize)) / psize];
 }
 
@@ -52,16 +52,18 @@ function getCanvasInfo() {
     psize : taille des pixels
     */
     let positionInfo = cadre_canvas.getBoundingClientRect();
-    let width  = Math.ceil(positionInfo.width);
-    let height = Math.ceil(positionInfo.height);
+    let width  = Math.floor(positionInfo.width);
+    let height = Math.floor(positionInfo.height);
     let pixelSize;
     if (width < height) {
-        pixelSize = Math.ceil(width / nbPixels);
+        pixelSize = Math.floor(width / nbPixels);
     } else {
-        pixelSize = Math.ceil(height / nbPixels);
+        pixelSize = Math.floor(height / nbPixels);
     }
+    let offsetX = Math.round((width - pixelSize * nbPixels) / 2);
+    let offsetY = Math.round((height - pixelSize * nbPixels) / 2);
 
-    return {"w": width, "h": height, "psize": pixelSize};
+    return {"w": width, "h": height, "psize": pixelSize, "offsetX": offsetX, "offsetY": offsetY};
 }
 
 function resizeCanvas(canvas) {
@@ -83,19 +85,23 @@ function draw(canvas, nbPixels, pixels) {
     const canvaInfo = getCanvasInfo();
     const ctx = canvas.getContext("2d");
 
+    let infos = getCanvasInfo();
+
+    ctx.fillStyle = 'rgb(240, 240, 240)';
+    ctx.fillRect(0, 0, infos.w, infos.h - 6);
     // Dessiner les pixels
     for (let i = 0; i < nbPixels; i++) {
         for (let j = 0; j < nbPixels; j++) {
             ctx.fillStyle = 'rgb(' + pixels[j*nbPixels + i][0] + ',' + pixels[j*nbPixels + i][1] + ',' + pixels[j*nbPixels + i][2] + ')';
-            ctx.fillRect(i*canvaInfo.psize, j*canvaInfo.psize, canvaInfo.psize, canvaInfo.psize);
+            ctx.fillRect(i*canvaInfo.psize + infos.offsetX, j*canvaInfo.psize + infos.offsetY, canvaInfo.psize, canvaInfo.psize);
         }
     }
 
     // Dessiner la grille
     ctx.fillStyle = 'rgb(200, 200, 200)';
     for (let i = 0; i < nbPixels+1; i++) {
-        ctx.fillRect(canvaInfo.psize*i, 0, 1, canvaInfo.psize*nbPixels); // lignes verticales
-        ctx.fillRect(0, canvaInfo.psize*i, canvaInfo.psize*nbPixels, 1); // lignes horizontales
+        ctx.fillRect(canvaInfo.psize*i + infos.offsetX, 0 + infos.offsetY, 1, canvaInfo.psize*nbPixels); // lignes verticales
+        ctx.fillRect(0 + infos.offsetX, canvaInfo.psize*i + infos.offsetY, canvaInfo.psize*nbPixels, 1); // lignes horizontales
     }
 }
 
@@ -123,6 +129,8 @@ $.ajax({
 });
 if (canvaInfo === undefined || canvaInfo === null) {
     alert('The room ' + canvaName + ' does not exist');
+} else {
+    document.title = 'Room : ' + canvaName;
 }
 console.log(canvaInfo);
 
@@ -138,8 +146,9 @@ const ratio  = window.devicePixelRatio;
 let pixels = []; // les pixels à afficher sur le canva
 let modifs = []; // les modifications qu'on fait en cliquant sur un pixel
 let serverModifs = []; // les modifications reçu depuis le serveur pour mettre à jour les pixels
-let firstImageLoad = true;
 resizeCanvas(canvas);
+console.log(pseudo); // récupéré dans le EJS
+console.log(userId); // récupéré dans le EJS
 
 // Communication avec un socket lié au serveur pour envoyer et recevoir les modifs
 const socket = new WebSocket('ws://localhost:8080');
@@ -162,6 +171,17 @@ socket.onerror = function(error) {
     console.error('WebSocket error:', error);
 };
 
+// socket.send(JSON.stringify({pseudo: pseudo}));
+
+const timer = document.getElementById("timer");
+let timeToWait = 0;
+setInterval(() => {
+    if (timeToWait > 0) {
+        timeToWait -= 1;
+    }
+    timer.innerText = 'TIMER ' + timeToWait;
+}, 1000);
+
 // Events listeners ---------------------------
 window.addEventListener('resize', () => {
     // Quand la fenêtre bouge on redimensionne le canva et on le redessine
@@ -177,11 +197,14 @@ img.addEventListener("load", () => {
 
 canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
-    coords = adaptCoords([event.clientX, event.clientY]);
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    modifs.push([coords[0], coords[1], [255, 0, 0]]);
-    socket.send(JSON.stringify({id: canvaInfo.id, x: modifs[0][0], y: modifs[0][1], color: modifs[0][2]}));
-    modifs = [];
+    if (timeToWait <= 0) {
+        timeToWait = parseInt(canvaInfo.minTime); 
+        coords = adaptCoords([event.clientX, event.clientY]);
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        modifs.push([coords[0], coords[1], [255, 0, 0]]);
+        socket.send(JSON.stringify({id: canvaInfo.id, x: modifs[0][0], y: modifs[0][1], color: modifs[0][2]}));
+        modifs = [];
+    }
 });

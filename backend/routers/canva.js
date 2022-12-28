@@ -27,6 +27,10 @@ server.on('connection', function(socket) {
     // When you receive a message, send that message to every socket.
     socket.on('message', function(data) {
         data = JSON.parse(data.toString());
+
+        console.log(data.pseudo);
+        // socket.request.headers.data = data.pseudo;
+
         lastModifs.push(data);
         sockets.forEach(s => s.send(JSON.stringify(selectModifsById(lastModifs, data.id))));
 
@@ -47,7 +51,6 @@ server.on('connection', function(socket) {
             .then(image => {
                 image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
                     if (x == data.x && y == data.y) {
-                        console.log(idx);
                         this.bitmap.data[idx + 0] = data.color[0]; // red channel
                         this.bitmap.data[idx + 1] = data.color[1];   // green channel
                         this.bitmap.data[idx + 2] = data.color[2];   // blue channel
@@ -58,9 +61,6 @@ server.on('connection', function(socket) {
             .then(image => {
                 return image.write('../frontend/assets/img/canvas/canva_' + data.id + '.png');
             })
-            .then(() => {
-                console.log('Image saved!');
-            })
             .catch(err => {
                 console.error(err);
             });
@@ -68,6 +68,7 @@ server.on('connection', function(socket) {
 
     // When a socket closes, or disconnects, remove it from the array.
     socket.on('close', function() {
+        // console.log('deco ', socket.request.headers.data);
         sockets = sockets.filter(s => s !== socket);
     });
 });
@@ -83,7 +84,6 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 // Mathias Hersent
 router.post('/info', function (req, res) {
     let data = req.body;
-    console.log(data.name);
     db.serialize(() => {
         const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
         statement.get(data.name, (err, result) => {
@@ -91,7 +91,6 @@ router.post('/info', function (req, res) {
                 console.log(err.message);
                 res.json(null);
             } else if (result !== undefined) {
-                console.log(result);
                 let info = {};
                 info.id = result.id;
                 info.size = result.size;
@@ -109,7 +108,8 @@ router.post('/info', function (req, res) {
 });
 
 router.use('/', (req, res) => {
-    res.render('canva.ejs');
+    console.log(req.session.pseudo);
+    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId });
 });
 
 // handling errors
