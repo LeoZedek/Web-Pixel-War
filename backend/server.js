@@ -9,15 +9,6 @@ app.set('view engine', 'ejs');
 // set the server host and port
 const port = 3000;
 
-// const wss = new WebSocket.Server({ noServer: true });
-
-// wss.on('connection', function connection(ws) {
-//     // send the current hour to the client every second
-//     setInterval(function() {
-//         ws.send(new Date().toTimeString());
-//     }, 1000);
-// });
-
 app.use(session({
     secret: 'supersecret', //used to sign the session ID cookie
     name: 'session', // (optional) name of the session cookie

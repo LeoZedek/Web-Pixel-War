@@ -4,6 +4,17 @@ const sqlite3 = require('sqlite3').verbose();
 const jimp = require('jimp');
 const WebSocket = require('ws');
 
+// Mathias Hersent
+function selectModifsById(modifs, id) {
+    let result = [];
+    for (let i = 0; i < modifs.length; i++) {
+        if (modifs[i].id === id) {
+            result.push(modifs[i]);
+        }
+    }
+    return result;
+}
+
 // Les sockets: Mathias Hersent
 let lastModifs = [];
 const server = new WebSocket.Server({
@@ -16,9 +27,8 @@ server.on('connection', function(socket) {
     // When you receive a message, send that message to every socket.
     socket.on('message', function(data) {
         data = JSON.parse(data.toString());
-        console.log('data: ' + data)
         lastModifs.push(data);
-        sockets.forEach(s => s.send(JSON.stringify(lastModifs)));
+        sockets.forEach(s => s.send(JSON.stringify(selectModifsById(lastModifs, data.id))));
 
         let nbPixels;
         db.serialize(() => {
@@ -30,6 +40,7 @@ server.on('connection', function(socket) {
                     nbPixels = result.size;
                 }
             });
+            statement.finalize();
         });
 
         jimp.read('../frontend/assets/img/canvas/canva_' + data.id + '.png')
@@ -93,6 +104,7 @@ router.post('/info', function (req, res) {
                 res.json(null);
             }
         });
+        statement.finalize();
     });
 });
 

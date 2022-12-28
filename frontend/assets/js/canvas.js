@@ -74,7 +74,6 @@ function resizeCanvas(canvas) {
     canvas.height = canvasInfo.h * ratio;
     canvas.style.width  = canvasInfo.w + 'px';
     canvas.style.height = canvasInfo.h + 'px';
-    console.log(canvas.width, canvas.height, canvas.style.width, canvas.style.height);
 }
 
 function draw(canvas, nbPixels, pixels) {
@@ -150,7 +149,7 @@ socket.onopen = function(event) {
 };
 
 socket.onmessage = function(event) {
-    console.log('received:', JSON.parse(event.data));
+    // console.log('received:', JSON.parse(event.data));
     updatePixels(JSON.parse(event.data));
     draw(canvas, nbPixels, pixels);
 };
