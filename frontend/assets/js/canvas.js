@@ -175,11 +175,60 @@ socket.onerror = function(error) {
 
 const timer = document.getElementById("timer");
 let timeToWait = 0;
+update_time_to_wait(userId);
+
+function update_time_to_wait(user_id) {
+    // Auteur : Léo Zedek
+
+    // Update the variable timeToWait with a request to the database
+    $.ajax({
+        type: 'POST',
+        url: '/canva/get_time_to_wait',
+        data: {user_id: user_id},
+        success: function(received) {
+            if (received != null) {
+                time_since_last_modif = received["time_since_last_modif"];
+
+                if (time_since_last_modif > canvaInfo.minTime) {
+                    timeToWait = 0;
+                }
+                else {
+                    timeToWait = canvaInfo.minTime - time_since_last_modif;
+                }
+            }
+        },
+        error: function() {
+            console.error('Erreur requête get_time_to_wait');
+        }
+    });
+}
+
+function update_last_time_modif(user_id) {
+    // Auteur : Léo Zedek
+
+    // Update the database. The variable lastModifTime from the user will be updated
+    $.ajax({
+            type: 'POST',
+            url: '/canva/update_date',
+            data: {user_id: user_id},
+            success: function(received) {},
+            error: function() {
+                console.error('Erreur requête update_date');
+            }
+        });
+}
+
 setInterval(() => {
     if (timeToWait > 0) {
         timeToWait -= 1;
     }
-    timer.innerText = 'TIMER ' + timeToWait;
+
+    if (timeToWait <= 1) {
+        timer.innerText = "TIMER : " + timeToWait + " second";
+    }
+    else {
+        timer.innerText = 'TIMER  : ' + timeToWait  + " seconds";
+    }
 }, 1000);
 
 // Events listeners ---------------------------
@@ -198,6 +247,8 @@ img.addEventListener("load", () => {
 canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
     if (timeToWait <= 0) {
+        update_last_time_modif(userId);
+
         timeToWait = parseInt(canvaInfo.minTime); 
         coords = adaptCoords([event.clientX, event.clientY]);
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

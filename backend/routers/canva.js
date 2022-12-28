@@ -107,6 +107,60 @@ router.post('/info', function (req, res) {
     });
 });
 
+router.post("/get_time_to_wait", (req, res) => {
+    // Auteur : Léo Zedek
+
+    let data = req.body;
+    let id = data["user_id"];
+
+    db.serialize(() => {
+
+        const statement = db.prepare("SELECT lastModifTime FROM user WHERE id = ?;");
+        statement.get(id, (err, result) => {
+            if (err) {
+                console.error(err.message);
+                res.json(null);
+            }
+
+            else if (result != undefined) {
+                let last_modif_time = result["lastModifTime"];
+
+                let time_now = Math.floor(Date.now() / 1000); // seconds since epoch
+
+                res.json({time_since_last_modif : time_now - last_modif_time});
+            }
+
+            else {
+                console.error("Id user not found : " + id);
+                res.json(null);
+            }
+        })
+
+        statement.finalize();
+
+    });
+});
+
+router.post("/update_date", (req, res) => {
+    // Auteur : Léo Zedek
+
+
+    // Update in the database the variable lastModifTime of the user that match the id
+    let data = req.body;
+    let id = data["user_id"];
+
+    db.serialize(() => {
+
+        let time_now = Math.floor(Date.now() / 1000); // seconds since epoch 
+
+        const statement = db.prepare("UPDATE user SET lastModifTime = ? where id = ?;");
+
+        statement.run(time_now, id);
+
+        statement.finalize();
+    });
+});
+
 router.use('/', (req, res) => {
     console.log(req.session.pseudo);
     res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId });
