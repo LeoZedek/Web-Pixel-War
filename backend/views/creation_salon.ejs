@@ -36,8 +36,8 @@
         <label class="select_label" for="select_rank">Access allowed for</label>
         <select v-model="minimum_rank" name="select_rank">
             <option value="0">everybody</option>
-            <option value="1">VIP</option>
-            <option value="2">Creator only</option>
+            <option v-bind:disabled="!playerVIP" value="1">VIP</option>
+            <option v-bind:disabled="!playerVIP" value="100">Creator only</option>
         </select>
         <br />
         <label class="select_label" for="select_time">Waiting time (for non VIP)</label>
@@ -78,6 +78,7 @@
 <script src="assets/js/vue.js"></script>
 
 <script>
+    // Raphaël Largeau
     const app = new Vue({
         el: "#app",
         data: {
@@ -91,7 +92,8 @@
             minimum_rank: 0,
             canva_size: "25",
             time: 60,
-            vip_time: 30
+            vip_time: 30,
+            playerVIP: false
         },
         methods: {
             submit: () => {
@@ -115,7 +117,7 @@
                             console.log(received);
                             if (received.exists) {
                                 app.name_exists = true;
-                            } else if(received.err){
+                            } else if (received.err) {
                                 app.sql_err = true;
                             } else {
                                 window.location.href = received.redirect;
@@ -133,14 +135,19 @@
         }
     });
 
+    // Raphaël Largeau
     $.ajax({
         type: 'POST',
         url: '/create_room/colors',
         success: function (received) {
-            app.colors = received;
-            for (index in received) {
+            app.colors = received.colors;
+            for (index in received.colors) {
                 app.color_selected.push(true);
             }
+            if (received.playerRank !== undefined) {
+                app.playerVIP = received.playerRank == 1;
+            }
+            console.log(app.playerRank);
         },
         error: function () {
             alert('Problème AJAX');

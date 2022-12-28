@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Home !!</title>
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/index.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <h1 class="grand_titre">HOME</h1>
+
+    <div id="app" class="cadre">
+
+        <h2 class="titre_cadre">Home</h2>
+
+        <div class="liste_salon">
+            <div v-for="row in rows" v-if="vip_level_authorized(row.minimumRank)" v-on:click="go_to(row.name)"
+                class="element_salon">
+                <img v-bind:src="img_src(row.avatarName)" class="image_salon">
+                <div class="texte_liste">{{ row.name }} </div>
+            </div>
+        </div>
+
+        <div class="boutons">
+            <a v-if="!connected" href="connexion"><button class="bouton">Join</button></a>
+            <a v-if="connected" href="create_room"><button class="bouton">Create</button></a>
+        </div>
+
+    </div>
+
+</body>
+
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/vue.js"></script>
+
+<script>
+    // Raphaël Largeau
+    const app = new Vue({
+        el: "#app",
+        data: {
+            rows: [],
+            playerRank: 0,
+            connected: false
+        },
+        methods: {
+            img_src: (name) => {
+                return "assets/img/canvas/" + name;
+            },
+            go_to: (name) => {
+                window.location.href = "canva?name=" + name;
+            },
+            vip_level_authorized: (minimumRank) => {
+                return app.playerRank >= minimumRank
+            }
+        }
+    });
+
+    // Raphaël Largeau
+    $.ajax({
+        type: 'POST',
+        url: '/data_room',
+        success: function (received) {
+            app.rows = received.rows;
+            if (received.playerRank !== undefined) {
+                app.playerRank = received.playerRank;
+            }
+            if (received.connected !== undefined) {
+                app.connected = received.connected;
+            }
+            console.log(app.rows, app.playerRank, app.connected);
+        },
+        error: function () {
+            alert('Problème AJAX');
+        }
+    });
+</script>
+
+</html>
