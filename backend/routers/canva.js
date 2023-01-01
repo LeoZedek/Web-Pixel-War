@@ -43,21 +43,35 @@ server.on('connection', function(socket) {
                     console.log(err.message);
                 } else if (result.colorStats !== null) {
                     colorStats = result.colorStats;
-                    let tmp = colorStats.split(',');
-                    tmp.pop();
-                    let colorStatsDict = {};
-                    let tab;
-                    for (let i = 0; i < tmp.length; i++) {
-                        tab = tmp[i].split(':');
-                        colorStatsDict[tab[0]] = tab[1];
-                    }
-                    colorStatsDict[data.id] = (parseInt(colorStatsDict[data.id]) + 1).toString();
-                    let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
 
-                    // On met à jour les stats de couleur
-                    const statement2 = db.prepare("UPDATE canvas SET colorStats = ? where id = ?;");
-                    statement2.run(updatedColorStats, data.id);
-                    statement2.finalize();
+                    // On récupère le l'id correspondant au code hexa de la couleur
+                    let colorId;
+                    const statement1 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
+                    statement1.get('#'+data.hexa, (err, result) => {
+                        if (err) {
+                            console.log(err.message);
+                        } else if (result.id !== null) {
+                            colorId = result.id;
+                            
+                            // On met à jour les stats de couleur
+                            let tmp = colorStats.split(',');
+                            tmp.pop();
+                            let colorStatsDict = {};
+                            let tab;
+                            for (let i = 0; i < tmp.length; i++) {
+                                tab = tmp[i].split(':');
+                                colorStatsDict[tab[0]] = tab[1];
+                            }
+                            console.log(JSON.stringify(colorStatsDict).toString());
+                            colorStatsDict[colorId] = (parseInt(colorStatsDict[colorId]) + 1).toString();
+                            let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
+
+                            const statement2 = db.prepare("UPDATE canvas SET colorStats = ? where id = ?;");
+                            statement2.run(updatedColorStats, data.id);
+                            statement2.finalize();
+                        }
+                    });
+                    statement1.finalize();                    
                 }
             });
             statement.finalize();

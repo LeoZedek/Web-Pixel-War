@@ -256,6 +256,6 @@ canvas.addEventListener("mousedown", (event) => {
         let r = 255,
             g = 0,
             b = 0;
-        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color: [r, g, b], hexa: "leCodeHexa"}));
+        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color: [r, g, b], hexa: "FF0000"}));
     }
 });
