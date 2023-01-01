@@ -41,7 +41,7 @@ server.on('connection', function(socket) {
             statement.get(data.id, (err, result) => {
                 if (err) {
                     console.log(err.message);
-                } else {
+                } else if (result.colorStats !== null) {
                     colorStats = result.colorStats;
                     let tmp = colorStats.split(',');
                     tmp.pop();
@@ -53,8 +53,6 @@ server.on('connection', function(socket) {
                     }
                     colorStatsDict[data.id] = (parseInt(colorStatsDict[data.id]) + 1).toString();
                     let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
-                    console.log(updatedColorStats);
-                    console.log('colors : ' + JSON.stringify(colorStatsDict).toString());
 
                     // On met à jour les stats de couleur
                     const statement2 = db.prepare("UPDATE canvas SET colorStats = ? where id = ?;");
@@ -69,7 +67,7 @@ server.on('connection', function(socket) {
             .then(image => {
                 image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
                     if (x == data.x && y == data.y) {
-                        this.bitmap.data[idx + 0] = data.color[0]; // red channel
+                        this.bitmap.data[idx + 0] = data.color[0];   // red channel
                         this.bitmap.data[idx + 1] = data.color[1];   // green channel
                         this.bitmap.data[idx + 2] = data.color[2];   // blue channel
                     }

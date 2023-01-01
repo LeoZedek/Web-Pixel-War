@@ -144,7 +144,6 @@ const canvas = document.getElementById("canvas");
 const ratio  = window.devicePixelRatio;
 
 let pixels = []; // les pixels à afficher sur le canva
-let modifs = []; // les modifications qu'on fait en cliquant sur un pixel
 let serverModifs = []; // les modifications reçu depuis le serveur pour mettre à jour les pixels
 resizeCanvas(canvas);
 console.log(pseudo); // récupéré dans le EJS
@@ -254,8 +253,9 @@ canvas.addEventListener("mousedown", (event) => {
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        modifs.push([coords[0], coords[1], [255, 0, 0]]);
-        socket.send(JSON.stringify({id: canvaInfo.id, x: modifs[0][0], y: modifs[0][1], color: modifs[0][2]}));
-        modifs = [];
+        let r = 255,
+            g = 0,
+            b = 0;
+        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color: [r, g, b], hexa: "leCodeHexa"}));
     }
 });
