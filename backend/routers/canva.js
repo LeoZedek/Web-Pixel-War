@@ -28,25 +28,43 @@ server.on('connection', function(socket) {
     socket.on('message', function(data) {
         data = JSON.parse(data.toString());
 
-        console.log(data.pseudo);
+        // console.log(data.pseudo);
         // socket.request.headers.data = data.pseudo;
 
         lastModifs.push(data);
         sockets.forEach(s => s.send(JSON.stringify(selectModifsById(lastModifs, data.id))));
 
-        let nbPixels;
+        let colorStats;        
         db.serialize(() => {
-            const statement = db.prepare("SELECT size FROM canvas WHERE id = ?;");
+            // On récupère les stats de couleurs
+            const statement = db.prepare("SELECT colorStats FROM canvas WHERE id = ?;");
             statement.get(data.id, (err, result) => {
                 if (err) {
                     console.log(err.message);
                 } else {
-                    nbPixels = result.size;
+                    colorStats = result.colorStats;
+                    let tmp = colorStats.split(',');
+                    tmp.pop();
+                    let colorStatsDict = {};
+                    let tab;
+                    for (let i = 0; i < tmp.length; i++) {
+                        tab = tmp[i].split(':');
+                        colorStatsDict[tab[0]] = tab[1];
+                    }
+                    colorStatsDict[data.id] = (parseInt(colorStatsDict[data.id]) + 1).toString();
+                    let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
+                    console.log(updatedColorStats);
+                    console.log('colors : ' + JSON.stringify(colorStatsDict).toString());
+
+                    // On met à jour les stats de couleur
+                    const statement2 = db.prepare("UPDATE canvas SET colorStats = ? where id = ?;");
+                    statement2.run(updatedColorStats, data.id);
+                    statement2.finalize();
                 }
             });
             statement.finalize();
         });
-
+        
         jimp.read('../frontend/assets/img/canvas/canva_' + data.id + '.png')
             .then(image => {
                 image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
@@ -162,7 +180,6 @@ router.post("/update_date", (req, res) => {
 });
 
 router.use('/', (req, res) => {
-    console.log(req.session.pseudo);
     res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId });
 });
 
