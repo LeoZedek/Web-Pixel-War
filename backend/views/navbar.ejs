@@ -1,0 +1,16 @@
+<!--Adrien Gaulin-->
+<link href="assets/css/navbar.css" rel="stylesheet">
+
+<nav id="navbar" class="navbar">
+    <a href="/">Home</a>
+    <a href="/connexion">Log In/Sign Up</a>
+    <a href="/create_room">Rooms</a>
+    <a href="/canva">Canvas</a>
+    <a href="/room_statistics">Rooms Statistics</a>
+    <% if(connected) { %>
+    <a href="/user_statistics"><%- pseudo %>'s Statistics</a>
+    <% } else { %>
+    <a href="/user_statistics" class="users_stats_not_connected">Users Statistics</a>
+    <% } %>
+</nav>
+<br>

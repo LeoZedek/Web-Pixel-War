@@ -100,7 +100,7 @@ router.use('/', (req, res) => {
 	
 	let id_user = 1;
 
-	res.render("profil_user.ejs", {id_user : id_user});
+	res.render("profil_user.ejs", {id_user : id_user,  connected : req.session.connected, pseudo : req.session.pseudo});
 
 })
 

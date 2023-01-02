@@ -180,7 +180,7 @@ router.post("/update_date", (req, res) => {
 });
 
 router.use('/', (req, res) => {
-    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId });
+    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId, connected : req.session.connected });
 });
 
 // handling errors

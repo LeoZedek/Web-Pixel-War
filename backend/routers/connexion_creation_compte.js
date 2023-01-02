@@ -35,7 +35,7 @@ router.post('/verify', function (req, res) {
 })
 
 router.use('/connexion', function (req, res) {
-	res.render('connexion_creation_compte.ejs', {})
+	res.render('connexion_creation_compte.ejs', {connected : req.session.connected, pseudo : req.session.pseudo})
 })
 
 router.post('/signin', function (req, res) {

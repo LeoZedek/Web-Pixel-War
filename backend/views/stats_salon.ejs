@@ -15,6 +15,10 @@
 
 <body>
 
+    <header>
+    <%- include('navbar.ejs', {connected: connected, pseudo : pseudo}) %>
+    </header>
+
     <div id = "app">
         <div class="cadre">
             <h1>Canva's name : {{canva_name}}</h1>

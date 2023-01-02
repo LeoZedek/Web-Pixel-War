@@ -74,7 +74,7 @@ router.post('/', (req, res) => {
 	let data = req.body;
 	let id_canva = data["id"];
 	
-	res.render("stats_salon.ejs", {id_canva : id_canva});
+	res.render("stats_salon.ejs", {id_canva : id_canva,  connected : req.session.connected, pseudo : req.session.pseudo});
 
 })
 
@@ -84,7 +84,7 @@ router.get('/', (req, res) => {
 	let data = req.query;
 	let id_canva = data["id"];
 	
-	res.render("stats_salon.ejs", {id_canva : id_canva});
+	res.render("stats_salon.ejs", {id_canva : id_canva,  connected : req.session.connected, pseudo : req.session.pseudo});
 
 })
 

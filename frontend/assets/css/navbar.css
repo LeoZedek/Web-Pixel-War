@@ -1,0 +1,36 @@
+header{
+    margin-bottom: 20%;
+}
+
+nav{
+    font-size: 20px;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    position: absolute;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0%);
+
+}
+
+.users_stats_not_connected{
+    color: darkgray;
+    pointer-events: none;
+}
+
+nav a{
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    color: royalblue;
+    margin: 0 15px 15px 0;
+    padding: 10px 10px;
+}
+
+nav a:hover{
+    background-color: royalblue;
+    color: whitesmoke;
+    border: 1px solid black;
+}
+
