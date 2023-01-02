@@ -243,6 +243,34 @@ img.addEventListener("load", () => {
     draw(canvas, nbPixels, pixels);
 });
 
+
+// LIOTÉ Ruth
+let colorValue = '#00000';
+function getColorValue() {
+    let el = document.getElementsByName("select_color");
+
+    for(i = 0; i < el.length; i++) {
+        if(el[i].checked){
+            colorValue = el[i].value;
+        }
+    }
+
+    console.log('yey');
+    console.log(colorValue);
+}
+
+
+// LIOTÉ Ruth
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+}
+
+
 canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
     if (timeToWait <= 0) {
@@ -250,12 +278,17 @@ canvas.addEventListener("mousedown", (event) => {
 
         timeToWait = parseInt(canvaInfo.minTime); 
         coords = adaptCoords([event.clientX, event.clientY]);
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // C EST ICI QU IL FAUT METTRE LA BONNE COULEUR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        let r = 255,
-            g = 0,
-            b = 0;
-        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color: [r, g, b], hexa: "FF0000"}));
+        
+        // LIOTÉ Ruth
+        
+        //Récupère la couleur par défaut du bouton.
+	getColorValue();
+
+        console.log(colorValue);
+        let colorValueRGB = hexToRgb(colorValue);
+        console.log(colorValueRGB);
+        
+        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color:[colorValueRGB.r, colorValueRGB.g, colorValueRGB.b], hexa: colorValue}));
+
     }
 });

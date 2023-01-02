@@ -47,7 +47,7 @@ server.on('connection', function(socket) {
                     // On récupère le l'id correspondant au code hexa de la couleur
                     let colorId;
                     const statement1 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
-                    statement1.get('#'+data.hexa, (err, result) => {
+                    statement1.get(data.hexa, (err, result) => {
                         if (err) {
                             console.log(err.message);
                         } else if (result.id !== null) {

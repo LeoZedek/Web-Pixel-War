@@ -1,3 +1,4 @@
+<!-- LIOTÉ Ruth -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,12 +26,8 @@
                     <tr>
                         <td >
                             <div class="item_couleur" v-for="(mycolor, index) in color_ids">
-                                <input v-model="color_ids[mycolor]" type="radio" name="select_color">
+                                <input type="radio" name="select_color" v-bind:value="colors[color_ids[index]-1].color" onclick="getColorValue()" checked>
                                 <label for="select_color"></label>
-                                <!-- <p>couleur : {{mycolor}}</p>
-                                <p>index : {{index}}</p>
-                                <p>{{colors[color_ids[index]-1]}}</p> -->
-                                <!-- <p>{{colors[mycolor]}}</p> -->
                                 <span v-bind:style="{ color: colors[color_ids[index]-1].color }">⬤</span>
                             </div>
                         </td>
@@ -73,6 +70,7 @@
     <script src="assets/js/vue.js"></script>
 
     <script vue>
+        // LIOTÉ Ruth
         let pseudo = '<%= pseudo %>';
         let userId = '<%= userId %>';
 
@@ -84,6 +82,7 @@
         document.getElementById("room").innerHTML = room_nameh2;
 
         let color_brute = [];
+
         const app = new Vue({
             el:"#color_selectors",
             data: {
@@ -96,13 +95,14 @@
                         return false;
                     }
                     return true;
-                }
+                },
             }  
         })
         $.ajax({
             type: 'POST',
             url: '/canva/info',
             data: {"name": canvaName2},
+
             async: false,
             success: function (data) {
 
@@ -130,12 +130,7 @@
         url: '/create_room/colors',
         success: function (received) {
             app.colors = received.colors;
-            console.table(app.colors);
-            for (index in app.colors){
-                console.log(app.colors[index].id);
-                console.log(app.colors[index].color);
-            }
-            
+            console.table(app.colors);            
         },
         error: function () {
             alert('Problème AJAX');
