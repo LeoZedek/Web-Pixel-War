@@ -21,7 +21,7 @@
 
     <div id = "app">
         <div class="cadre">
-            <h1>Canva's name : {{canva_name}}</h1>
+            <h1>Room's name : {{room_name}}</h1>
             <h2 class="titre_cadre">Statistics</h2>
 
             <div class="ligne_texte">Number of modified pixels : {{number_modifications}}</div>
@@ -51,14 +51,11 @@
             return result;
         }
         
-        // Get ESJ variable
-        let id_canva = '<%= id_canva%>';
-
         const app = new Vue({
             el:"#app",
             data: {
                 number_modifications: null,
-                canva_name: "",
+                room_name: '<%= room_name%>',
             },
         });
 
@@ -66,9 +63,8 @@
         $.ajax({
             type: "POST",
             url: "/room_statistics/get_statistics",
-            data : {id : id_canva},
+            data : {name : app._data.room_name},
             success: function(received_data) {
-                app._data.canva_name = received_data["canva_name"];
                 app._data.number_modifications = received_data["nb_modif"];
 
                 let color_stats = color_stats_string_to_json(received_data["color_stats"]);
