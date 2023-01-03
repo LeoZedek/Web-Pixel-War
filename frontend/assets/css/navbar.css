@@ -14,7 +14,7 @@ nav{
 
 }
 
-.users_stats_not_connected{
+.not_connected{
     color: darkgray;
     pointer-events: none;
 }
