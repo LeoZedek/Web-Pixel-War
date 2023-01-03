@@ -129,9 +129,15 @@
                 let colors_name = [];
 
                 for (id_color in color_stats) {
-                    numbers.push(color_stats[id_color]);
-                    colors_code.push(colors_code_by_id[id_color]);
-                    colors_name.push("Color " + colors_code_by_id[id_color]);
+                    let number_color = color_stats[id_color];
+
+                    if (number_color > 0) {
+                        numbers.push(number_color);
+                        colors_code.push(colors_code_by_id[id_color]);
+                        colors_name.push("Color " + colors_code_by_id[id_color]);
+                    }
+
+
                 }
 
                 let data = [
