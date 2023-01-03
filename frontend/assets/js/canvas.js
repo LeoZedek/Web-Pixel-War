@@ -170,8 +170,6 @@ socket.onerror = function(error) {
     console.error('WebSocket error:', error);
 };
 
-// socket.send(JSON.stringify({pseudo: pseudo}));
-
 const timer = document.getElementById("timer");
 let timeToWait = 0;
 update_time_to_wait(userId);
@@ -273,7 +271,7 @@ function hexToRgb(hex) {
 
 canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
-    if (timeToWait <= 0) {
+    if (timeToWait <= 0 && pseudo !== '') {
         update_last_time_modif(userId);
 
         timeToWait = parseInt(canvaInfo.minTime); 

@@ -62,7 +62,6 @@ server.on('connection', function(socket) {
                                 tab = tmp[i].split(':');
                                 colorStatsDict[tab[0]] = tab[1];
                             }
-                            console.log(JSON.stringify(colorStatsDict).toString());
                             colorStatsDict[colorId] = (parseInt(colorStatsDict[colorId]) + 1).toString();
                             let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
 
