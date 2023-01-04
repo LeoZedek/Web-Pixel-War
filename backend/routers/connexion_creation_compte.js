@@ -17,6 +17,15 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 	console.log('Connected to the database!');
 });
 
+router.post('/logout', function (req, res) {
+	req.session.destroy();
+	req.session = undefined;
+	console.log("Logout !!!!!");
+	console.log(req.session);
+	console.log("fin !!!");
+	res.json("/");
+})
+
 
 router.post('/verify', function (req, res) {
 	let sql = 'SELECT pseudo FROM user'

@@ -32,18 +32,17 @@
         <br />
         <label class="select_label" for="select_size">Canva size</label>
         <select v-model="canva_size" name="select_size">
+            <option value="10">10x10</option>
             <option value="25">25x25</option>
+            <option value="50">50x50</option>
+            <option value="75">75x75</option>
             <option value="100">100x100</option>
-            <option value="200">200x200</option>
-            <option value="500">500x500</option>
-            <option value="1000">1000x1000</option>
         </select>
         <br />
         <label class="select_label" for="select_rank">Access allowed for</label>
         <select v-model="minimum_rank" name="select_rank">
             <option value="0">everybody</option>
             <option v-bind:disabled="!playerVIP" value="1">VIP</option>
-            <option v-bind:disabled="!playerVIP" value="100">Creator only</option>
         </select>
         <br />
         <label class="select_label" for="select_time">Waiting time (for non VIP)</label>
@@ -96,7 +95,7 @@
             name_exists: false,
             sql_err: false,
             minimum_rank: 0,
-            canva_size: "25",
+            canva_size: "10",
             time: 60,
             vip_time: 30,
             playerVIP: false
@@ -152,8 +151,9 @@
             }
             if (received.playerRank !== undefined) {
                 app.playerVIP = received.playerRank == 1;
+            } else {
+                window.location.href = "/connexion"
             }
-            console.log(app.playerRank);
         },
         error: function () {
             alert('Problème AJAX');
