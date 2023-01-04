@@ -78,7 +78,6 @@ server.on('connection', function(socket) {
                     console.log(err.message);
                 } else if (result.nbModif !== null) {
                     let updatedNbModif = result.nbModif + 1;
-                    console.log(updatedNbModif);
 
                     const statement4 = db.prepare("UPDATE user SET nbModif = ? where id = ?;");
                     statement4.run(updatedNbModif, data.userId);

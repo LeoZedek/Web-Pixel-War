@@ -276,11 +276,10 @@ canvas.addEventListener("mousedown", (event) => {
 
         timeToWait = parseInt(canvaInfo.minTime); 
         coords = adaptCoords([event.clientX, event.clientY]);
-        
+        if (coords[0] >= 0 && coords[0] < nbPixels && coords[1] >= 0 && coords[1] < nbPixels) {
         // LIOTÉ Ruth
-        
         //Récupère la couleur par défaut du bouton.
-	getColorValue();
+	    getColorValue();
 
         console.log(colorValue);
         let colorValueRGB = hexToRgb(colorValue);
@@ -288,5 +287,6 @@ canvas.addEventListener("mousedown", (event) => {
         
         socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color:[colorValueRGB.r, colorValueRGB.g, colorValueRGB.b], hexa: colorValue, userId: userId}));
 
+        }
     }
 });
