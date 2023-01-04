@@ -1,12 +1,40 @@
+#pixelwar {
+    text-align: center;
+}
+
+#pixelwar > h1 {
+    margin-top: 8vh;
+    font-size: 7vh;
+    text-shadow: 4px 4px rgb(160, 12, 12);
+    perspective: 100px;
+}
+
+#pixelwar > span {
+    perspective: 100px;
+}
+
+#sparkle1 {
+    position: absolute;
+    top: 5vh;
+    left: 5vw;
+    height: 10vh;
+}
+
+#sparkle2 {
+    position: absolute;
+    top: 15vh;
+    right: 5vw;
+    height: 8vh;
+}
+
 .grand_titre{
     text-align: center;
 }
 
 .cadre{
-    margin: 5% 15%;
+    margin: 5vh 15%;
     max-width: 70%;
     height: fit-content;
-    
 }
 
 .liste_salon{

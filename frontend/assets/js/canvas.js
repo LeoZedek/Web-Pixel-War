@@ -181,6 +181,10 @@ document.onreadystatechange = () => {
     }
 }
 
+setInterval(() => {
+    draw(canvas, nbPixels, pixels);
+}, 1000);
+
 function update_time_to_wait(user_id, vip_level) {
     // Auteur : Léo Zedek
 
