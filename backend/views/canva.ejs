@@ -1,7 +1,6 @@
-<!-- LIOTÉ Ruth -->
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- LIOTÉ Ruth -->
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,57 +19,71 @@
     <%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
     </header>
 
-    <div class="page_canva">
-        <div class="cadre" id="side_menu">
-            <div class="bloc_titre_1">
-                <h2 id="room" class="titre_cadre"></h2>
-                <p id="timer">TIMER 00:30</p>
-            </div>
-            <div id="color_selectors">
-                <h2 class="titre_cadre">Colors</h2>
-                <table>
-                    <tr>
-                        <td >
-                            <div class="item_couleur" v-for="(mycolor, index) in color_ids">
-                                <input type="radio" name="select_color" v-bind:value="colors[color_ids[index]-1].color" onclick="getColorValue()" checked>
-                                <label for="select_color"></label>
-                                <span v-bind:style="{ color: colors[color_ids[index]-1].color }">⬤</span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="bloc_titre_2">
-                <h2 class="titre_cadre">Users</h2>
-            </div>
-            <div class="user_list">
-                <div class="user_div">
-                    <img src="assets/img/profile.png" class="image">
-                    <p>Pseudo</p>
-                </div>
-                <div class="user_div">
-                    <img src="assets/img/profile.png" class="image">
-                    <p>Pseudo</p>
-                </div>
-                <div class="user_div">
-                    <img src="assets/img/profile.png" class="image">
-                    <p>Pseudo</p>
-                </div>
-                <div class="user_div">
-                    <img src="assets/img/profile.png" class="image">
-                    <p>Pseudo</p>
-                </div>
-                <div class="user_div">
-                    <img src="assets/img/profile.png" class="image">
-                    <p>Pseudo</p>
-                </div>
-            </div>
+    <div id="app">
+
+        <div v-if="locked">
+            <label for="password">Insert room's password</label>
+            <input id="password" type="password" name="password" v-model="submit_password_string">
+            <button v-on:click="submit_password()" >Submit</button>
         </div>
 
-        <div class="canva_cadre">
-            <canvas id="canvas"></canvas>
+        <div v-bind:style="style_visibility">
+                
+            <div class="page_canva">
+                <div class="cadre" id="side_menu">
+                    <div class="bloc_titre_1">
+                        <h2 id="room" class="titre_cadre"></h2>
+                        <p id="timer">TIMER 00:30</p>
+                    </div>
+                    <div id="color_selectors">
+                        <h2 class="titre_cadre">Colors</h2>
+                        <table>
+                            <tr>
+                                <td >
+                                    <div class="item_couleur" v-for="(mycolor, index) in color_ids">
+                                        <input type="radio" name="select_color" v-bind:value="colors[color_ids[index]-1].color" onclick="getColorValue()" checked>
+                                        <label for="select_color"></label>
+                                        <span v-bind:style="{ color: colors[color_ids[index]-1].color }">⬤</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="bloc_titre_2">
+                        <h2 class="titre_cadre">Users</h2>
+                    </div>
+                    <div class="user_list">
+                        <div class="user_div">
+                            <img src="assets/img/profile.png" class="image">
+                            <p>Pseudo</p>
+                        </div>
+                        <div class="user_div">
+                            <img src="assets/img/profile.png" class="image">
+                            <p>Pseudo</p>
+                        </div>
+                        <div class="user_div">
+                            <img src="assets/img/profile.png" class="image">
+                            <p>Pseudo</p>
+                        </div>
+                        <div class="user_div">
+                            <img src="assets/img/profile.png" class="image">
+                            <p>Pseudo</p>
+                        </div>
+                        <div class="user_div">
+                            <img src="assets/img/profile.png" class="image">
+                            <p>Pseudo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canva_cadre">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
+
     <div id="askToConnect" style="visibility: hidden;">
         <p>You must be connected to modify the canvas</p>
         <button class="bouton" onclick="askToConnect()">OK</button>
@@ -106,21 +119,75 @@
         let color_brute = [];
 
         const app = new Vue({
-            el:"#color_selectors",
+            el:"#app",
             data: {
                 colors: [],
                 color_ids: [],
+                locked: true,
+                password_hash: "",
+                style_visibility: "visibility: collapse",
+                submit_password_string: "",
             },
             methods: {
                 isValid: function(index){
-                    if (typeof this.colors[this.color_ids[index]] === "undefined"){
+                    if (typeof app.colors[app.color_ids[index]] === "undefined"){
                         return false;
                     }
                     return true;
                 },
-            }  
+
+                submit_password: function() {
+                    // Auteur : Léo Zedek
+
+                    console.log('pass: ' + app.submit_password_string);
+                    $.ajax({
+                        type: "POST",
+                        url: "/canva/check_password",
+                        data: {
+                            submit_password: app.submit_password_string,
+                            room_name : canvaName2,
+                        },
+
+                        success: function(received) {
+                            if (received["good_password"]) {
+                                app.locked = false;
+                                app.style_visibility = "visibility: visible";
+                            }
+                        },
+                        error: function() {
+                            alert("Error AJAX");
+                        }
+                    });
+                }
+            }
         })
+
         $.ajax({
+            // Auteur : Léo Zedek
+
+            type: "POST",
+            url: "/canva/get_password_hash",
+            data: {"name": canvaName2},
+
+            success: function(received) {
+                app._data.password_hash = received["password_hash"];
+
+                if (app._data.password_hash == "") {
+                    app._data.locked = false;
+                    app._data.style_visibility = "visibility: visible";
+                }
+                else {
+                    app._data.locked = true;
+                    app._data.style_visibility = "visibility: collapse";
+                }
+            },
+            error: function() {
+                alert("Problème AJAX");
+            }
+        });
+
+        $.ajax({
+
             type: 'POST',
             url: '/canva/info',
             data: {"name": canvaName2},

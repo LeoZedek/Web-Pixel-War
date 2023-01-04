@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const sqlite3 = require('sqlite3').verbose();
 const jimp = require('jimp');
 const WebSocket = require('ws');
@@ -162,6 +163,76 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
         console.error(err.message);
     }
     console.log('Connected to the database!');
+});
+
+router.post('/check_password', function(req, res) {
+    // Auteur : Léo Zedek
+
+    let data = req.body;
+    let submit_password = data["submit_password"];
+    let submit_password_hash = bcrypt.hashSync(submit_password, 10);
+    let room_name = data["room_name"];
+
+    db.serialize(() => {
+        const statement = db.prepare("SELECT pwdHash FROM rooms WHERE rooms.name = ?;");
+
+        statement.get(room_name, (err, result) => {
+            if (err) {
+                console.error(err.message);
+                res.json(null);
+
+            } else if (result !== undefined) {
+
+                bcrypt.compare(submit_password, result["pwdHash"], function(err, result) {
+                    if (err) {
+                        console.error(err.message);
+                    }
+
+                    else {
+                        if (result) {
+                            res.json({good_password : true});
+                        }
+                        else {
+                            res.json({good_password: false});
+                        }
+                    }
+                });
+
+            } else {
+                console.log("Room's name not found :" + room_name);
+                res.json(null);
+            }
+        });
+
+        statement.finalize();
+    })
+});
+
+router.post('/get_password_hash', function (req, res) {
+    // Auteur : Léo Zedek
+
+    let data = req.body;
+    let room_name = data["name"];
+
+    db.serialize(() => {
+        const statement = db.prepare("SELECT pwdHash FROM rooms WHERE rooms.name = ?;");
+
+        statement.get(room_name, (err, result) => {
+            if (err) {
+                console.log(err.message);
+                res.json(null);
+
+            } else if (result !== undefined) {
+                res.json({password_hash : result["pwdHash"]});
+
+            } else {
+                console.log("Room's name not found :" + room_name);
+                res.json(null);
+            }
+        });
+
+        statement.finalize();
+    })
 });
 
 // Mathias Hersent
