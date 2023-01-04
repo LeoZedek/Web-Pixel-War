@@ -1,3 +1,5 @@
+//Adrien Gaulin
+
 const express = require('express');
 const bcrypt = require('bcryptjs')
 const router = express.Router();
@@ -15,10 +17,6 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 	console.log('Connected to the database!');
 });
 
-//
-//compte : demoxx bonjour
-//admin admin
-//
 
 router.post('/verify', function (req, res) {
 	let sql = 'SELECT pseudo FROM user'
