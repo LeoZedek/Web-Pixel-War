@@ -15,6 +15,11 @@
 </head>
 
 <body>
+
+    <header>
+    <%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
+    </header>
+
     <div class="page_canva">
         <div class="cadre" id="side_menu">
             <div class="bloc_titre_1">

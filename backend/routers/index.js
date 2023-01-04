@@ -31,7 +31,7 @@ router.post('/data_room', (req, res, next) => {
 
 // Raphaël Largeau
 router.use('/', (req, res) => {
-    res.render('index.ejs');
+    res.render('index.ejs', {connected: req.session.connected, pseudo: req.session.pseudo, room : req.session.room});
 });
 
 

@@ -13,6 +13,10 @@
 </head>
 
 <body>
+    <header>
+    <%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
+    </header>
+
     <h1 class="grand_titre">HOME</h1>
 
     <div id="app" class="cadre">

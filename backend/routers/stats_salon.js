@@ -14,34 +14,28 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 
 router.post('/get_statistics', (req, res) => {
 	let data = req.body;
-	let id_canva = data["id"];
+	let room_name = data["name"];
 
-	let canva_name, color_stats, nb_modif;
+	let color_stats, nb_modif;
 	const colors = {};
 	let erreur_database = false;
 
-	if (id_canva != null) {
+	if (room_name != null) {
 
 		db.serialize(() => {
-			const statement = db.prepare("SELECT CanvaName, colorStats, nbModif FROM canvas WHERE id=?;");
-
-			statement.get(id_canva, (err, result) => {
+			const statement = db.prepare("SELECT canvas.colorStats, canvas.nbModif FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
+			statement.get(room_name, (err, result) => {
 				if (err) {
-					console.err(err.message);
+					console.error(err.message);
 					erreur_database = true;
 				}
 				else {
 					if (result != null) {
-						canva_name = result["name"];
 						color_stats = result["colorStats"];
 						nb_modif = result["nbModif"];
-
-						console.log(canva_name);
-						console.log(color_stats);
-						console.log(nb_modif);
 					}
 					else {
-						console.error("Id not found : " + id_canva);
+						console.error("Canva not found : " + room_name);
 						erreur_database = true;
 					}
 				}
@@ -57,8 +51,8 @@ router.post('/get_statistics', (req, res) => {
 	                    colors[rows[row].id] = rows[row].colorCode;
 	                }
 
-	                //console.log({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
-					res.json({colors : colors, canva_name : canva_name, color_stats : color_stats, nb_modif : nb_modif});
+	                //console.log({colors : colors, color_stats : color_stats, nb_modif : nb_modif});
+					res.json({colors : colors, color_stats : color_stats, nb_modif : nb_modif});
 	            }
 	        });
 		})
@@ -70,21 +64,11 @@ router.post('/get_statistics', (req, res) => {
 	}
 })
 
-router.post('/', (req, res) => {
-	let data = req.body;
-	let id_canva = data["id"];
-	
-	res.render("stats_salon.ejs", {id_canva : id_canva});
-
-})
-
-// Seulement pour tester, à retirer plus tard
-
 router.get('/', (req, res) => {
 	let data = req.query;
-	let id_canva = data["id"];
+	let room_name = data["name"];
 	
-	res.render("stats_salon.ejs", {id_canva : id_canva});
+	res.render("stats_salon.ejs", {room_name : room_name,  connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room});
 
 })
 
