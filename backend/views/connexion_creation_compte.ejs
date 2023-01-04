@@ -8,24 +8,22 @@
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/connexion_creation_compte.css">
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/minecraftia" type="text/css"/>
 	<title>Connexion/Creation compte</title>
 </head>
 
 <body>
-	<header>
 	<%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
-	</header>
 
 	<div class="cadre">
 		<h2 class="titre_cadre">Connexion</h2>
 		<br>
 		<form action="/signin" method="post" role="form">
-			<div><input type="text" name="username_signin"  id="username_signin" class="entree_texte" placeholder="username" required></div>
-			<div><input type="password" name="password_signin"  id="password_signin" class="entree_texte" placeholder="password" required></div>
-			<div><button type="submit" id="submit_signin" class="entree_submit">Sign in</button></div>
+			<div class="connexion"><input type="text" name="username_signin"  id="username_signin" class="entree_texte" placeholder="username" required></div>
+			<div class="connexion"><input type="password" name="password_signin"  id="password_signin" class="entree_texte" placeholder="password" required></div>
+			<div class="connexion"><button type="submit" id="submit_signin" class="entree_submit">Sign in</button></div>
 		</form>
 		<br>
-
 	</div>
 	<div class="cadre" name="logsignup" id="logsignup">
 		<h2 class="titre_cadre">Join Us</h2>

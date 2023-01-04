@@ -4,24 +4,26 @@
 <head>
     <meta charset="utf-8">
 
-    <title>Home !!</title>
+    <title>HOME</title>
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/minecraftia" type="text/css"/>
+
 
 </head>
 
 <body>
-    <header>
     <%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
-    </header>
 
-    <h1 class="grand_titre">HOME</h1>
+    <div class="div_image">
+        <img id="image_home" src="assets/img/cat.png">
+    </div>
 
     <div id="app" class="cadre">
 
-        <h2 class="titre_cadre">Home</h2>
+        <h2 class="titre_cadre">HOME</h2>
 
         <div class="liste_salon">
             <div v-for="row in rows" v-if="vip_level_authorized(row.minimumRank)" v-on:click="go_to(row.name)"
@@ -32,8 +34,8 @@
         </div>
 
         <div class="boutons">
-            <a v-if="!connected" href="connexion"><button class="bouton">Join</button></a>
-            <a v-if="connected" href="create_room"><button class="bouton">Create</button></a>
+            <a v-if="!connected" href="connexion"><button class="bouton">JOIN</button></a>
+            <a v-if="connected" href="create_room"><button class="bouton">CREATE</button></a>
         </div>
 
     </div>

@@ -2,18 +2,20 @@
     border-width: 1mm;
     border-color: gray;
     border-radius: 2mm;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'MinecraftiaRegular', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 body{
     padding: 0;
     margin: 0;
     overflow: scroll;
+    background-color: #c1d3e8;
+
 }
 
 .cadre{
     border-style: solid;
-    background-color: whitesmoke;
+    background-color: #eef0f0;
 }
 
 .titre_cadre{

@@ -7,15 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/creation_salon.css">
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/minecraftia" type="text/css"/>
+
     <title>Create new room</title>
 </head>
 
 <body>
 
-    <header>
     <%- include('navbar.ejs', {connected: connected, pseudo : pseudo, room : room}) %>
-    </header>
-
 
     <div id="app" class="cadre">
         <h2 class="titre_cadre">Create your room</h2>
@@ -75,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div v-on:click="submit()" class="bouton_envoi"><button>Create</button></div>
+        <div v-on:click="submit()" class="bouton_envoi"><button id="create_button">Create</button></div>
     </div>
 </body>
 

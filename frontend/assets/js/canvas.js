@@ -243,10 +243,10 @@ setInterval(() => {
     }
 
     if (timeToWait <= 1) {
-        timer.innerText = "TIMER : " + timeToWait + " second";
+        timer.innerText = timeToWait;
     }
     else {
-        timer.innerText = 'TIMER  : ' + timeToWait  + " seconds";
+        timer.innerText = timeToWait;
     }
 }, 1000);
 

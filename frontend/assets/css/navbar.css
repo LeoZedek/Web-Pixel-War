@@ -2,16 +2,17 @@ header{
     margin-bottom: 20%;
 }
 
+
 nav{
-    font-size: 20px;
+    font-size: 15px;
     padding: 5px;
     text-align: center;
     display: flex;
     position: absolute;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, 0%);
-
+    background-color: #515c7f;
+    width: 100%;
+    border-radius: 0;
+    height: 6vh;
 }
 
 .not_connected{
@@ -23,14 +24,21 @@ nav a{
     display: inline-block;
     text-decoration: none;
     text-align: center;
-    color: royalblue;
-    margin: 0 15px 15px 0;
+    color: white;
+    margin: 5px 15px 15px 5px;
     padding: 10px 10px;
+    transition-duration: 0.3s;
 }
 
 nav a:hover{
-    background-color: royalblue;
-    color: whitesmoke;
-    border: 1px solid black;
+    background-color: #8b9bcf;
+    color: black;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
 }
 
+/* .color1 {color: #060606;}
+.color2 {color: #202439;}
+.color3 {color: #515c7f;}
+.color4 {color: #8b9bcf;}
+.color5 {color: #c1d3e8;} */

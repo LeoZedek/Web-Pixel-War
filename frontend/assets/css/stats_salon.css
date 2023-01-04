@@ -1,8 +1,13 @@
 .cadre{
-    margin: 5% 5% 0 5%;
+    margin: 10vh;
     padding: 2%;
+    text-align: center;
 }
 
 .ligne_texte{
     margin-top: 5mm;
+}
+
+#histogram{
+    margin: 3%;
 }

@@ -1,7 +1,6 @@
 body{
     display:flex;
     flex-direction: row;
-    padding: 0 2vw;
 }
 
 .cadre{
@@ -9,5 +8,29 @@ body{
     width: 50vw;
     padding:2mm;
     margin:30vh 2vw;
+    text-align: center;
+}
+
+.entree_texte{
+    padding: 10px;
+    width: 90%;
+}
+
+
+.entree_submit{
+    margin: 5% 5%;
+    width: 37%;
+    padding: 10px;
+    font-size: medium;
+    background-color: #515c7f;
+    color: #e3effd;
+    transition-duration: 0.4s;
+}
+
+.entree_submit:hover{
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    border-color:#515c7f;
+    background-color: #e3effd;
+    color: #060606;
 }
 
