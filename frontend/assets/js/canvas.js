@@ -174,6 +174,13 @@ const timer = document.getElementById("timer");
 let timeToWait = 0;
 update_time_to_wait(userId, vip_level);
 
+document.onreadystatechange = () => {
+    if (document.readyState == "complete") {
+        resizeCanvas(canvas);
+        draw(canvas, nbPixels, pixels);
+    }
+}
+
 function update_time_to_wait(user_id, vip_level) {
     // Auteur : Léo Zedek
 
@@ -296,7 +303,6 @@ canvas.addEventListener("mousedown", (event) => {
         else if (vip_level == 1) {
             minTime = canvaInfo.minTimeVIP;
         }
-
 
         timeToWait = parseInt(minTime);
 
