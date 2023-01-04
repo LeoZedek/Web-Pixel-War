@@ -78,7 +78,7 @@ server.on('connection', function(socket) {
             statement3.get(data.userId, (err, result) => {
                 if (err) {
                     console.log(err.message);
-                } else if (result.nbModif !== undefined) {
+                } else if (result !== undefined) {
                     // Update nbModifs
                     let updatedNbModif = result.nbModif + 1;
 
