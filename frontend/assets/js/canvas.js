@@ -187,10 +187,7 @@ function update_time_to_wait(user_id, vip_level) {
                 time_since_last_modif = received["time_since_last_modif"];
 
                 let minTime;
-                console.log("Vip level :" + vip_level);
-                console.log(vip_level);
-                console.log("time_since_last_modif :" + time_since_last_modif);
-                console.log(time_since_last_modif);
+
                 if (vip_level != undefined && vip_level == 0) {
                     minTime = parseInt(canvaInfo.minTime);
                 }
@@ -222,7 +219,11 @@ function update_last_time_modif(user_id) {
             type: 'POST',
             url: '/canva/update_date',
             data: {user_id: user_id},
-            success: function(received) {},
+            success: function(received) {
+                if (received != null) {
+                    vip_level = received["new_vip_level"];
+                }
+            },
             error: function() {
                 console.error('Erreur requête update_date');
             }
@@ -298,7 +299,7 @@ canvas.addEventListener("mousedown", (event) => {
 
 
         timeToWait = parseInt(minTime);
-        console.log("time to wait : " + timeToWait);
+
         coords = adaptCoords([event.clientX, event.clientY]);
         if (coords[0] >= 0 && coords[0] < nbPixels && coords[1] >= 0 && coords[1] < nbPixels) {
         // LIOTÉ Ruth

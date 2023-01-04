@@ -241,6 +241,32 @@ router.post("/update_date", (req, res) => {
         statement.run(time_now, id);
 
         statement.finalize();
+
+        const statement2 = db.prepare("SELECT nbModif FROM user where id = ?;");
+
+        statement2.get(id, (err, result) => {
+            if (err) {
+                console.error(err.message);
+                res.json(null);
+            }
+
+            else if (result != undefined) {
+                let nbModif = result["nbModif"];
+
+                if (nbModif >= VIPlevel) {
+                    req.session.vipLevel = 1;
+                }
+                res.json({new_vip_level : req.session.vipLevel})
+
+            }
+
+            else {
+                console.error("Id user not found : " + id);
+                res.json(null);
+            }
+        })
+
+        statement2.finalize();
     });
 });
 
