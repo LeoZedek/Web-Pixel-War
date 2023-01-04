@@ -73,7 +73,7 @@ router.post('/colors', (req, res) => {
 
 // Raphaël Largeau
 router.post('/submit', (req, res) => {
-    req.session.userId = 42;
+
     const data = req.body;
     if (data.pwd !== "") {
         data.pwd = bcrypt.hashSync(data.pwd, 10);
