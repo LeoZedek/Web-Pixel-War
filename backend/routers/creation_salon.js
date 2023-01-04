@@ -133,7 +133,7 @@ router.post('/submit', (req, res) => {
 
 // Raphaël Largeau
 router.use('/', (req, res) => {
-    res.render('creation_salon.ejs',  {connected : req.session.connected, pseudo : req.session.pseudo});
+    res.render('creation_salon.ejs',  {connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room});
 });
 
 

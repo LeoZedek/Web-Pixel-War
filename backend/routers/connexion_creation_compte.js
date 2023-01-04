@@ -35,7 +35,7 @@ router.post('/verify', function (req, res) {
 })
 
 router.use('/connexion', function (req, res) {
-	res.render('connexion_creation_compte.ejs', {connected : req.session.connected, pseudo : req.session.pseudo})
+	res.render('connexion_creation_compte.ejs', {connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room})
 })
 
 router.post('/signin', function (req, res) {
@@ -53,6 +53,7 @@ router.post('/signin', function (req, res) {
 						req.session.pseudo = result["pseudo"]
 						req.session.vipLevel = result["vipLevel"]
 						req.session.lastModifTime = result["lastModifTime"]
+						req.session.room = undefined
 						console.log(req.session)
 						res.redirect('/index');
 					}

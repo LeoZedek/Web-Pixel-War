@@ -68,7 +68,7 @@ router.get('/', (req, res) => {
 	let data = req.query;
 	let room_name = data["name"];
 	
-	res.render("stats_salon.ejs", {room_name : room_name,  connected : req.session.connected, pseudo : req.session.pseudo});
+	res.render("stats_salon.ejs", {room_name : room_name,  connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room});
 
 })
 

@@ -6,7 +6,11 @@
     <a href="/connexion">Log In/Sign Up</a>
     <% if(connected) { %>
     <a href="/create_room">Rooms</a>
-    <a href="/room_statistics">Rooms Statistics</a>
+        <% if(room === undefined){ %>
+        <a href="/room_statistics" class="not_connected">Rooms Statistics</a>
+        <% } else { %>
+        <a href="/room_statistics?name=<%= room %>">Rooms Statistics</a>
+        <% } %>
     <a href="/user_statistics"><%- pseudo %>'s Statistics</a>
     <% } else { %>
     <a href="/create_room" class="not_connected">Rooms</a>
@@ -15,3 +19,5 @@
     <% } %>
 </nav>
 <br>
+
+<!-- pour les stats de rooms, rajouter le ?name=req.session.name_salon ifohoz-->
