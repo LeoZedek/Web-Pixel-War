@@ -2,6 +2,23 @@ header{
     margin-bottom: 20%;
 }
 
+@keyframes slide {
+    from {
+        transform: translateX(100%);    
+    }
+    to {
+        transform: translateX(-2500%);
+    }
+}
+
+nav > img {
+    z-index: 0;
+    position: absolute;
+    height: 60px;
+    right: 0;
+    animation: slide 25s linear infinite;
+}
+
 
 nav{
     font-size: 15px;
@@ -21,20 +38,21 @@ nav{
 }
 
 nav a{
+    z-index: 10;
     display: inline-block;
     text-decoration: none;
     text-align: center;
     color: white;
-    margin: 5px 15px 15px 5px;
-    padding: 10px 10px;
+    margin: 10px;
+    padding: 5px;
     transition-duration: 0.3s;
 }
 
 nav a:hover{
     background-color: #8b9bcf;
+    opacity: .5;
     color: black;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-
 }
 
 /* .color1 {color: #060606;}
