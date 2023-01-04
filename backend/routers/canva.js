@@ -28,9 +28,6 @@ server.on('connection', function(socket) {
     socket.on('message', function(data) {
         data = JSON.parse(data.toString());
 
-        // console.log(data.pseudo);
-        // socket.request.headers.data = data.pseudo;
-
         lastModifs.push(data);
         sockets.forEach(s => s.send(JSON.stringify(selectModifsById(lastModifs, data.id))));
 
@@ -74,6 +71,21 @@ server.on('connection', function(socket) {
                 }
             });
             statement.finalize();
+
+            const statement3 = db.prepare("SELECT nbModif FROM user WHERE id = ?;");
+            statement3.get(data.userId, (err, result) => {
+                if (err) {
+                    console.log(err.message);
+                } else if (result.nbModif !== null) {
+                    let updatedNbModif = result.nbModif + 1;
+                    console.log(updatedNbModif);
+
+                    const statement4 = db.prepare("UPDATE user SET nbModif = ? where id = ?;");
+                    statement4.run(updatedNbModif, data.userId);
+                    statement4.finalize();
+                }
+            });
+            statement3.finalize();
         });
         
         jimp.read('../frontend/assets/img/canvas/canva_' + data.id + '.png')

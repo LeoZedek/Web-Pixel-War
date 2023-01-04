@@ -286,7 +286,7 @@ canvas.addEventListener("mousedown", (event) => {
         let colorValueRGB = hexToRgb(colorValue);
         console.log(colorValueRGB);
         
-        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color:[colorValueRGB.r, colorValueRGB.g, colorValueRGB.b], hexa: colorValue}));
+        socket.send(JSON.stringify({id: canvaInfo.id, x: coords[0], y: coords[1], color:[colorValueRGB.r, colorValueRGB.g, colorValueRGB.b], hexa: colorValue, userId: userId}));
 
     }
 });
