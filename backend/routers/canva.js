@@ -4,6 +4,8 @@ const sqlite3 = require('sqlite3').verbose();
 const jimp = require('jimp');
 const WebSocket = require('ws');
 
+const VIPlevel = 20;
+
 // Mathias Hersent
 function selectModifsById(modifs, id) {
     let result = [];
@@ -31,7 +33,7 @@ server.on('connection', function(socket) {
         lastModifs.push(data);
         sockets.forEach(s => s.send(JSON.stringify(selectModifsById(lastModifs, data.id))));
 
-        let colorStats;        
+        let colorStats;
         db.serialize(() => {
             // On récupère les stats de couleurs
             const statement = db.prepare("SELECT colorStats FROM canvas WHERE id = ?;");
@@ -72,16 +74,57 @@ server.on('connection', function(socket) {
             });
             statement.finalize();
 
-            const statement3 = db.prepare("SELECT nbModif FROM user WHERE id = ?;");
+            const statement3 = db.prepare("SELECT nbModif, colorStats FROM user WHERE id = ?;");
             statement3.get(data.userId, (err, result) => {
                 if (err) {
                     console.log(err.message);
-                } else if (result.nbModif !== null) {
+                } else if (result.nbModif !== undefined) {
+                    // Update nbModifs
                     let updatedNbModif = result.nbModif + 1;
+
+                    // Test si le user peut devenir VIP
+                    if (updatedNbModif > VIPlevel) {
+                        const statement5 = db.prepare("UPDATE user SET vipLevel = ? where id = ?;");
+                        statement5.run(1, data.userId);
+                        statement5.finalize();
+                    }
 
                     const statement4 = db.prepare("UPDATE user SET nbModif = ? where id = ?;");
                     statement4.run(updatedNbModif, data.userId);
                     statement4.finalize();
+
+                    let colorId;
+                    let userColorStats = result.colorStats;
+                    const statement5 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
+                    statement5.get(data.hexa, (err, result) => {
+                        if (err) {
+                            console.log(err.message);
+                        } else if (result.id !== null) {
+                            colorId = result.id;
+
+                            // Mise à jour des stats de couleur du user
+                            let tmp = userColorStats.split(',');
+                            tmp.pop();
+                            let colorStatsDict = {};
+                            let tab;
+                            for (let i = 0; i < tmp.length; i++) {
+                                tab = tmp[i].split(':');
+                                colorStatsDict[tab[0]] = tab[1];
+                            }
+                            if (colorStatsDict[colorId] === undefined) {
+                                colorStatsDict[colorId] = "1";
+                            } else {
+                                colorStatsDict[colorId] = (parseInt(colorStatsDict[colorId]) + 1).toString();
+                            }
+                            let updatedUserColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
+                            console.log(updatedUserColorStats);
+
+                            const statement6 = db.prepare("UPDATE user SET colorStats = ? where id = ?;");
+                            statement6.run(updatedUserColorStats, data.userId);
+                            statement6.finalize();
+                        }
+                    });
+                    statement5.finalize();
                 }
             });
             statement3.finalize();
