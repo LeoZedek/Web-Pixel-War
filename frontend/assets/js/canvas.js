@@ -147,7 +147,7 @@ let pixels = []; // les pixels à afficher sur le canva
 let serverModifs = []; // les modifications reçu depuis le serveur pour mettre à jour les pixels
 resizeCanvas(canvas);
 console.log(pseudo); // récupéré dans le EJS
-console.log(userId); // récupéré dans le EJS
+console.log("id : " + userId); // récupéré dans le EJS
 
 // Communication avec un socket lié au serveur pour envoyer et recevoir les modifs
 const socket = new WebSocket('ws://localhost:8080');
@@ -172,9 +172,9 @@ socket.onerror = function(error) {
 
 const timer = document.getElementById("timer");
 let timeToWait = 0;
-update_time_to_wait(userId);
+update_time_to_wait(userId, vip_level);
 
-function update_time_to_wait(user_id) {
+function update_time_to_wait(user_id, vip_level) {
     // Auteur : Léo Zedek
 
     // Update the variable timeToWait with a request to the database
@@ -186,11 +186,25 @@ function update_time_to_wait(user_id) {
             if (received != null) {
                 time_since_last_modif = received["time_since_last_modif"];
 
-                if (time_since_last_modif > canvaInfo.minTime) {
+                let minTime;
+                console.log("Vip level :" + vip_level);
+                console.log(vip_level);
+                console.log("time_since_last_modif :" + time_since_last_modif);
+                console.log(time_since_last_modif);
+                if (vip_level != undefined && vip_level == 0) {
+                    minTime = parseInt(canvaInfo.minTime);
+                }
+                else if (vip_level != undefined && vip_level == 1) {
+                    minTime = parseInt(canvaInfo.minTimeVIP);
+                }
+
+                console.log("minTime :" + minTime);
+
+                if (time_since_last_modif > minTime) {
                     timeToWait = 0;
                 }
                 else {
-                    timeToWait = canvaInfo.minTime - time_since_last_modif;
+                    timeToWait = minTime - time_since_last_modif;
                 }
             }
         },
@@ -273,8 +287,18 @@ canvas.addEventListener("mousedown", (event) => {
     // Quand le user clique
     if (timeToWait <= 0 && pseudo !== '') {
         update_last_time_modif(userId);
+        let minTime;
 
-        timeToWait = parseInt(canvaInfo.minTime); 
+        if (vip_level == 0) {
+            minTime = canvaInfo.minTime;
+        }
+        else if (vip_level == 1) {
+            minTime = canvaInfo.minTimeVIP;
+        }
+
+
+        timeToWait = parseInt(minTime);
+        console.log("time to wait : " + timeToWait);
         coords = adaptCoords([event.clientX, event.clientY]);
         if (coords[0] >= 0 && coords[0] < nbPixels && coords[1] >= 0 && coords[1] < nbPixels) {
         // LIOTÉ Ruth

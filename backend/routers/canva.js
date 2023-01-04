@@ -248,7 +248,7 @@ router.use('/', (req, res) => {
     let data = req.query;
 	let room_name = data["name"];
     req.session.room = room_name
-    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId, connected : req.session.connected, room : req.session.room });
+    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId, connected : req.session.connected, room : req.session.room, vipLevel : req.session.vipLevel });
 });
 
 // handling errors
