@@ -62,7 +62,7 @@ router.post('/signin', function (req, res) {
 						req.session.lastModifTime = result["lastModifTime"]
 						req.session.room = undefined
 						console.log(req.session)
-						res.redirect('/index');
+						res.redirect('/');
 					}
 					else {
 						console.log("wrong pseudo or password!")

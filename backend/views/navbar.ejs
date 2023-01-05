@@ -39,7 +39,7 @@
                     type: 'POST',
                     url: '/logout',
                     success: function (received) {
-                        window.location.href = received.redirect;
+                        window.location.href = received;
                     },
                     error: function () {
                         alert('Problème AJAX');
