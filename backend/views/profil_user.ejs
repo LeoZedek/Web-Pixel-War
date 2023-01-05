@@ -35,7 +35,7 @@
                 </div>
                 <div class="ligne_texte">
                     Password : 
-                    <input type="text" class="new_password" placeholder="current_pwd" v-model="pwdHash">
+                    <input type="password" class="new_password" placeholder="current_pwd" v-model="pwdHash">
                 </div>
                 <div class="ligne_texte"> 
                     <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
@@ -83,7 +83,7 @@
                 pseudo: "",
                 pwdHash : "",
                 vipLevel : "",
-                avatarPath : "assets/img/profile.png",
+                avatarPath : "assets/img/avatar_0.png",
             },
 
             methods: {
@@ -125,7 +125,7 @@
                 app._data.number_modifications = received_data["nb_modif"];
                 app._data.vipLevel = vip_level_name[received_data["vip_level"]];
 
-                //app._data.avatarPath = "assets/img/avatar_" + received_data["avatar_id"] + ".png";
+                app._data.avatarPath = "assets/img/avatar_" + received_data["avatar_id"] + ".png";
 
                 let color_stats = color_stats_string_to_json(received_data["color_stats"]);
                 let colors_code_by_id = received_data["colors"];

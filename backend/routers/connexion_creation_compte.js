@@ -1,5 +1,3 @@
-//Adrien Gaulin
-
 const express = require('express');
 const bcrypt = require('bcryptjs')
 const router = express.Router();
@@ -17,6 +15,7 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 	console.log('Connected to the database!');
 });
 
+// Raphaël Largeau
 router.post('/logout', function (req, res) {
 	req.session.destroy();
 	req.session = undefined;
@@ -26,7 +25,7 @@ router.post('/logout', function (req, res) {
 	res.json("/");
 })
 
-
+//Adrien Gaulin
 router.post('/verify', function (req, res) {
 	let sql = 'SELECT pseudo FROM user'
 	var takenPseudo = false
@@ -41,10 +40,12 @@ router.post('/verify', function (req, res) {
 	})
 })
 
+//Adrien Gaulin
 router.use('/connexion', function (req, res) {
 	res.render('connexion_creation_compte.ejs', {connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room})
 })
 
+//Adrien Gaulin
 router.post('/signin', function (req, res) {
 	let data = req.body
 	if (data["username_signin"] != null && data["username_singin"] != "" && data["password_signin"] != null && data["password_signin"] != "") {
@@ -80,6 +81,7 @@ router.post('/signin', function (req, res) {
 	}
 })
 
+//Adrien Gaulin
 router.post('/signup', function (req, res) {
 	let data = req.body
 	if (data["username_signup"] != null && data["username_signup"] != "" && data["password_signup"] != null && data["password_signup"] != "" && data["password_confirm_signup"] != null && data["password_confirm_signup"] != "") {
@@ -89,7 +91,8 @@ router.post('/signup', function (req, res) {
 			bcrypt.hash(password, 10, function (err, hash) {
 				db.serialize(() => {
 					const statement = db.prepare("INSERT INTO user(pseudo, pwdHash, vipLevel, avatarId, colorStats, nbModif, lastModifTime) VALUES(?,?,?,?,?,?,?);")
-					statement.run(data["username_signup"], hash, 0, 1, " ", 0, 0)
+					statement.run(data["username_signup"], hash, 0, data["avatar_selection"], " ", 0, 0)
+					console.log(data["avatar_selection"])
 					statement.finalize()
 					console.log("utilisateur enregistre")
 				})
