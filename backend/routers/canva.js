@@ -37,13 +37,13 @@ server.on('connection', function(socket) {
         let colorStats;
         db.serialize(() => {
             // On récupère les stats de couleurs
-            const statement = db.prepare("SELECT colorStats FROM canvas WHERE id = ?;");
+            const statement = db.prepare("SELECT colorStats, nbModif FROM canvas WHERE id = ?;");
             statement.get(data.id, (err, result) => {
                 if (err) {
                     console.log(err.message);
                 } else if (result.colorStats !== null) {
                     colorStats = result.colorStats;
-
+                    let nbModifRoom = result.nbModif + 1;
                     // On récupère le l'id correspondant au code hexa de la couleur
                     let colorId;
                     const statement1 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
@@ -65,8 +65,8 @@ server.on('connection', function(socket) {
                             colorStatsDict[colorId] = (parseInt(colorStatsDict[colorId]) + 1).toString();
                             let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
 
-                            const statement2 = db.prepare("UPDATE canvas SET colorStats = ? where id = ?;");
-                            statement2.run(updatedColorStats, data.id);
+                            const statement2 = db.prepare("UPDATE canvas SET colorStats = ?, nbModif = ? where id = ?;");
+                            statement2.run(updatedColorStats,nbModifRoom, data.id);
                             statement2.finalize();
                         }
                     });

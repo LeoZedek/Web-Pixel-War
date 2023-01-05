@@ -6,10 +6,10 @@ const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-    console.log('Connected to the database!');
+	if (err) {
+		console.error(err.message);
+	}
+	console.log('Connected to the database!');
 });
 
 router.post('/get_statistics', (req, res) => {
@@ -33,6 +33,19 @@ router.post('/get_statistics', (req, res) => {
 					if (result != null) {
 						color_stats = result["colorStats"];
 						nb_modif = result["nbModif"];
+
+						db.all("SELECT * FROM colors;", (err, rows) => {
+							if (err || erreur_database) {
+								console.error("Erreur Database");
+							} else {
+								for (row in rows) {
+									colors[rows[row].id] = rows[row].colorCode;
+								}
+
+								//console.log({colors : colors, color_stats : color_stats, nb_modif : nb_modif});
+								res.json({ colors: colors, color_stats: color_stats, nb_modif: nb_modif });
+							}
+						});
 					}
 					else {
 						console.error("Canva not found : " + room_name);
@@ -43,18 +56,7 @@ router.post('/get_statistics', (req, res) => {
 
 			statement.finalize();
 
-			db.all("SELECT * FROM colors;", (err, rows) => {
-	            if (err || erreur_database) {
-	                console.error("Erreur Database");
-	            } else {
-	                for (row in rows) {
-	                    colors[rows[row].id] = rows[row].colorCode;
-	                }
 
-	                //console.log({colors : colors, color_stats : color_stats, nb_modif : nb_modif});
-					res.json({colors : colors, color_stats : color_stats, nb_modif : nb_modif});
-	            }
-	        });
 		})
 	}
 
@@ -67,8 +69,8 @@ router.post('/get_statistics', (req, res) => {
 router.get('/', (req, res) => {
 	let data = req.query;
 	let room_name = data["name"];
-	
-	res.render("stats_salon.ejs", {room_name : room_name,  connected : req.session.connected, pseudo : req.session.pseudo, room : req.session.room});
+
+	res.render("stats_salon.ejs", { room_name: room_name, connected: req.session.connected, pseudo: req.session.pseudo, room: req.session.room });
 
 })
 

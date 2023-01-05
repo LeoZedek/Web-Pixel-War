@@ -63,6 +63,7 @@
             data : {name : app._data.room_name},
             success: function(received_data) {
                 app._data.number_modifications = received_data["nb_modif"];
+                console.log("hey", app.number_modifications)
 
                 let color_stats = color_stats_string_to_json(received_data["color_stats"]);
                 let colors_code_by_id = received_data["colors"];
@@ -77,7 +78,7 @@
                     if (number_color > 0) {
                         numbers.push(color_stats[id_color]);
                         colors_code.push(colors_code_by_id[id_color]);
-                        colors_name.push("Color " + colors_code_by_id[id_color]);
+                        colors_name.push("");//"Color " + colors_code_by_id[id_color]);
                     }
                 }
 
