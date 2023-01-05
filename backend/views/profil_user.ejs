@@ -41,9 +41,23 @@
                     Password : 
                     <input type="password" class="new_password" placeholder="new password" v-model="pwdHash" required>
                 </div>
+                <div class="ligne_texte">
+                    New Avatar : <select v-model="avatar_id">
+                        <option value="0">default</option>
+                        <option value="1">black cat</option>
+                        <option value="2">ginger cat</option>
+                        <option value="3">beige cat</option>
+                        <option value="4">grey cat</option>
+                        <option value="5">white cat</option>
+                        <option value="6">drawn cat</option>
+                        <option value="7">drawn bear</option>
+                        <option value="8">drawn rabbit</option>
+                    </select>
+                </div>
                 <div class="ligne_texte"> 
                     <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
                 </div>
+            
         </div>
 
         <div class="cadre">
@@ -88,6 +102,7 @@
                 pwdHash : "",
                 vipLevel : "",
                 avatarPath : "assets/img/avatar_0.png",
+                avatar_id : 0,
             },
 
             methods: {
@@ -100,17 +115,21 @@
                         data: {
                             id_user : id_user,
                             new_pseudo : app._data.pseudo,
-                            new_password : app._data.pwdHash
+                            new_password : app._data.pwdHash,
+                            new_avatar_id : app._data.avatar_id
+
                         },
                         success: function(received_data) {
                             alert("Profile updated successfully !");
+                            window.location.href = ('/index')
                         },
                         error: function() {
                             alert("Error during updating profile");
                         }
                     });
-                    }
+                    } else {
                     alert("New password mustn't be empty !");
+                    }
                     
 
                 }

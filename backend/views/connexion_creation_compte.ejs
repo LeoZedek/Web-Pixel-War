@@ -29,8 +29,8 @@
 		<br>
 		<form action="/signup" method="post" role="form">
 			<div><input v-on:keyup="checkValidPseudo()" type="text" name="username_signup" id="username_signup" class="entree_texte" placeholder="username" required></div>
-			<div><input type="password" name="password_signup" id="password_signup" class="entree_texte" placeholder="password" required></div>
-			<div><input type="password" name="password_confirm_signup" id="password_confirm_signup" class="entree_texte" placeholder="confirm the password" required></div>
+			<div><input type="password" name="password_signup" id="password_signup" class="entree_texte" placeholder="password" v-model="first_password" required></div>
+			<div><input type="password" name="password_confirm_signup" id="password_confirm_signup" class="entree_texte" placeholder="confirm the password" v-model="confirm_password" required></div>
 			<div>Avatar : <select name="avatar_selection" id="avatar_selection">
 				<option value="0">default</option>
 				<option value="1">black cat</option>
@@ -38,9 +38,12 @@
 				<option value="3">beige cat</option>
 				<option value="4">grey cat</option>
 				<option value="5">white cat</option>
+				<option value="6">drawn cat</option>
+				<option value="7">drawn bear</option>
+				<option value="8">drawn rabbit</option>
 			</select></div>
 			<h3 v-if="notValidPseudo" style="color: red;" class="ligne_texte">this name is already taken</h3>
-			<div v-if="!notValidPseudo" class="button_div"><button v-if="!notValidPseudo" type="submit" id="submit_signup" class="entree_submit">Sign up</button></div>
+			<div v-if="!notValidPseudo" class="button_div"><button v-if="!notValidPseudo" type="submit" id="submit_signup" class="entree_submit" v-on:click="verifyPassword()">Sign up</button></div>
 		</form>
 		<br>
 
@@ -55,9 +58,17 @@
 		const app=new Vue({
 			el:"#logsignup",
 			data:{
-				notValidPseudo : false
+				notValidPseudo : false,
+				first_password : "",
+				confirm_password : "",
+
 			},
 			methods:{
+				verifyPassword : function() {
+					if (app._data.first_password !== app._data.confirm_password){
+						alert("the password confirmation is wrong : the user could not be created !")
+					}
+				},
 				checkValidPseudo: function() {
 					var pseudoToVerify = "pseudo=" + $("#username_signup").val()
 					$.ajax({
