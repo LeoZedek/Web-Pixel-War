@@ -23,11 +23,14 @@ router.post("/update_profil", (req, res) => {
 	let id_user = data.id_user;
 	let new_pseudo = data.new_pseudo;
 	let new_password = data.new_password;
-	bcrypt.hash(new_password, 10, function (err, new_hash) {
-		const statement = db.prepare("UPDATE user SET pseudo = ?, pwdHash = ? where id = ?;");
-		statement.run(new_pseudo, new_hash, id_user);
-		statement.finalize();
-	})
+
+	if (new_password != ''){
+		bcrypt.hash(new_password, 10, function (err, new_hash) {
+			const statement = db.prepare("UPDATE user SET pseudo = ?, pwdHash = ? where id = ?;");
+			statement.run(new_pseudo, new_hash, id_user);
+			statement.finalize();
+		})
+	}
 	res.status(200).end();
 })
 

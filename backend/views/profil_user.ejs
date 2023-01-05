@@ -24,18 +24,18 @@
 
         <div class="cadre">
                 <h2 class="titre_cadre">Informations</h2>
-                <img v-bind:src="avatarPath" class="image">
+                <img id="avatar" v-bind:src="avatarPath" class="image">
                 <br>
                 <div class="ligne_texte">
                     Status : {{vipLevel}}
                 </div>
                 <div class="ligne_texte">
                     Username :
-                    <input type="text" class="new_pseudo" placeholder="new pseudo" v-model="pseudo">
+                    <input type="text" class="new_pseudo" placeholder="new pseudo" v-model="pseudo" required>
                 </div>
                 <div class="ligne_texte">
                     Password : 
-                    <input type="password" class="new_password" placeholder="new password" v-model="pwdHash">
+                    <input type="password" class="new_password" placeholder="new password" v-model="pwdHash" required>
                 </div>
                 <div class="ligne_texte"> 
                     <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
@@ -89,7 +89,8 @@
             methods: {
                 update_profil() {
                     
-                    $.ajax({
+                    if (app._data.pwdHash != ''){
+                        $.ajax({ 
                         type: "POST",
                         url: "/user_statistics/update_profil",
                         data: {
@@ -104,6 +105,9 @@
                             alert("Error during updating profile");
                         }
                     });
+                    }
+                    alert("New password mustn't be empty !");
+                    
 
                 }
             },
