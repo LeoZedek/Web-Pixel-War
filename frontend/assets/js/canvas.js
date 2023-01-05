@@ -181,7 +181,8 @@ document.onreadystatechange = () => {
     }
 }
 
-setInterval(() => {
+setTimeout(() => {
+    resizeCanvas(canvas);
     draw(canvas, nbPixels, pixels);
 }, 1000);
 
