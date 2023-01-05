@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <div id="askToConnect" style="visibility: collapse;">
+    <div id="askToConnect" style="visibility: hidden;">
         <p>You must be connected to modify the canvas</p>
         <button class="bouton" onclick="askToConnect()">OK</button>
     </div>
@@ -155,7 +155,7 @@
                 }
                 else {
                     app._data.locked = true;
-                    app._data.style_visibility = "visibility: collapse";
+                    app._data.style_visibility = "visibility: hidden";
                 }
             },
             error: function() {
