@@ -115,26 +115,3 @@ span {
     border: solid;
     padding: 3mm;
 }
-
-
-.cadre2 {
-    border-style: solid;
-    background-color: #eef0f0;
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    margin: 0 25%;
-    padding: 2%;
-}
-
-.bloc_room_pwd {
-    width: 100%;
-    margin: 0;
-    text-align: center;
-    align-items: center;
-    margin-bottom: 1%;
-}
-
-.bloc_room_pwd > input {
-    width: 240px;
-}
