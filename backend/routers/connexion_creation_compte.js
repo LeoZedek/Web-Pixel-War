@@ -89,7 +89,6 @@ router.post('/signup', function (req, res) {
 				db.serialize(() => {
 					const statement = db.prepare("INSERT INTO user(pseudo, pwdHash, vipLevel, avatarId, colorStats, nbModif, lastModifTime) VALUES(?,?,?,?,?,?,?);")
 					statement.run(data["username_signup"], hash, 0, data["avatar_selection"], " ", 0, 0)
-					console.log(data["avatar_selection"])
 					statement.finalize()
 					//console.log("utilisateur enregistre")
 				})
