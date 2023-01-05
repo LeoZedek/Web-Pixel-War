@@ -21,6 +21,19 @@ body{
 
 }
 
+#vip_status{
+    position: relative;
+    background-color: #ffff7d;
+    z-index: 0;
+}
+
+#sparkle {
+    z-index: 10;
+    position: absolute;
+    margin-left: 11%;
+    height: 5vh;
+}
+
 .ligne_texte{
     margin-top: 5mm;
 }

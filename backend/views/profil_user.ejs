@@ -26,9 +26,13 @@
                 <h2 class="titre_cadre">Informations</h2>
                 <img id="avatar" v-bind:src="avatarPath" class="image">
                 <br>
-                <div class="ligne_texte">
-                    Status : {{vipLevel}}
-                </div>
+                    <div class="ligne_texte" v-if="vipLevel=='VIP user'">
+                        <img id="sparkle" src="assets/img/sparkle_web.gif">
+                        <p id="vip_status"> Status : {{vipLevel}} </p>
+                    </div>
+                    <div id="normal_status" class="ligne_texte" v-if="vipLevel=='Normal user'">
+                        <p> Status : {{vipLevel}} </p>
+                    </div>
                 <div class="ligne_texte">
                     Username :
                     <input type="text" class="new_pseudo" placeholder="new pseudo" v-model="pseudo" required>
