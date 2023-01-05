@@ -31,11 +31,11 @@
                 </div>
                 <div class="ligne_texte">
                     Username :
-                    <input type="text" class="new_pseudo" placeholder="current_username" v-model="pseudo">
+                    <input type="text" class="new_pseudo" placeholder="new pseudo" v-model="pseudo">
                 </div>
                 <div class="ligne_texte">
                     Password : 
-                    <input type="password" class="new_password" placeholder="current_pwd" v-model="pwdHash">
+                    <input type="password" class="new_password" placeholder="new password" v-model="pwdHash">
                 </div>
                 <div class="ligne_texte"> 
                     <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
@@ -121,7 +121,7 @@
             data : {id : id_user},
             success: function(received_data) {
                 app._data.pseudo = received_data["pseudo"];
-                app._data.pwdHash = received_data["pwd_hash"];
+                //app._data.pwdHash = received_data["pwd_hash"];
                 app._data.number_modifications = received_data["nb_modif"];
                 app._data.vipLevel = vip_level_name[received_data["vip_level"]];
 
