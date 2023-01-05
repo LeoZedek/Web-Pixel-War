@@ -25,11 +25,11 @@
 
         <div id="app">
 
-            <div class="cadre" v-if="locked">
+            <div class="cadre2" v-if="locked">
                 <form method="dialog">
-                    <label for="password">Insert room's password</label>
-                    <input id="password" type="password" name="password" v-model="submit_password_string">
-                    <button v-on:click="submit_password()">Submit</button>
+                    <div class="bloc_room_pwd"><label for="password">Insert room's password</label></div>
+                    <div class="bloc_room_pwd"><input id="password" type="password" name="password" v-model="submit_password_string"></div>
+                    <div class="bloc_room_pwd" id="bloc_room_pwd_button"><button v-on:click="submit_password()">Submit</button></div>
                 </form>
             </div>
 
