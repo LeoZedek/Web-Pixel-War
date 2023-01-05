@@ -91,7 +91,7 @@ router.post('/get_statistics', (req, res) => {
 	}
 
 	else {
-		console.log("id_user pas valable");
+		console.error("id_user pas valable");
 	}
 })
 

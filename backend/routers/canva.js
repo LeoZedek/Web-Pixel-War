@@ -40,7 +40,7 @@ server.on('connection', function(socket) {
             const statement = db.prepare("SELECT colorStats, nbModif FROM canvas WHERE id = ?;");
             statement.get(data.id, (err, result) => {
                 if (err) {
-                    console.log(err.message);
+                    console.error(err.message);
                 } else if (result.colorStats !== null) {
                     colorStats = result.colorStats;
                     let nbModifRoom = result.nbModif + 1;
@@ -49,7 +49,7 @@ server.on('connection', function(socket) {
                     const statement1 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
                     statement1.get(data.hexa, (err, result) => {
                         if (err) {
-                            console.log(err.message);
+                            console.error(err.message);
                         } else if (result.id !== null) {
                             colorId = result.id;
                             
@@ -78,7 +78,7 @@ server.on('connection', function(socket) {
             const statement3 = db.prepare("SELECT nbModif, colorStats FROM user WHERE id = ?;");
             statement3.get(data.userId, (err, result) => {
                 if (err) {
-                    console.log(err.message);
+                    console.error(err.message);
                 } else if (result !== undefined) {
                     // Update nbModifs
                     let updatedNbModif = result.nbModif + 1;
@@ -99,7 +99,7 @@ server.on('connection', function(socket) {
                     const statement5 = db.prepare("SELECT id FROM colors WHERE colorCode = ?;");
                     statement5.get(data.hexa, (err, result) => {
                         if (err) {
-                            console.log(err.message);
+                            console.error(err.message);
                         } else if (result.id !== null) {
                             colorId = result.id;
 
@@ -118,7 +118,7 @@ server.on('connection', function(socket) {
                                 colorStatsDict[colorId] = (parseInt(colorStatsDict[colorId]) + 1).toString();
                             }
                             let updatedUserColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
-                            console.log(updatedUserColorStats);
+                            //console.log(updatedUserColorStats);
 
                             const statement6 = db.prepare("UPDATE user SET colorStats = ? where id = ?;");
                             statement6.run(updatedUserColorStats, data.userId);
@@ -199,7 +199,7 @@ router.post('/check_password', function(req, res) {
                 });
 
             } else {
-                console.log("Room's name not found :" + room_name);
+                console.error("Room's name not found :" + room_name);
                 res.json(null);
             }
         });
@@ -219,14 +219,14 @@ router.post('/get_password_hash', function (req, res) {
 
         statement.get(room_name, (err, result) => {
             if (err) {
-                console.log(err.message);
+                console.error(err.message);
                 res.json(null);
 
             } else if (result !== undefined) {
                 res.json({password_hash : result["pwdHash"]});
 
             } else {
-                console.log("Room's name not found :" + room_name);
+                console.error("Room's name not found :" + room_name);
                 res.json(null);
             }
         });
@@ -242,7 +242,7 @@ router.post('/info', function (req, res) {
         const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
         statement.get(data.name, (err, result) => {
             if (err) {
-                console.log(err.message);
+                console.error(err.message);
                 res.json(null);
             } else if (result !== undefined) {
                 let info = {};

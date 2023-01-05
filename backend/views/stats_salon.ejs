@@ -63,7 +63,6 @@
             data : {name : app._data.room_name},
             success: function(received_data) {
                 app._data.number_modifications = received_data["nb_modif"];
-                console.log("hey", app.number_modifications)
 
                 let color_stats = color_stats_string_to_json(received_data["color_stats"]);
                 let colors_code_by_id = received_data["colors"];
@@ -105,7 +104,7 @@
                 
             },
             error: function() {
-              console.log("Error AJAX");
+              console.error("Error AJAX");
             }
           });
 

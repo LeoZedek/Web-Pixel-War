@@ -20,8 +20,6 @@ router.post('/data_room', (req, res, next) => {
         if (err){
             next(err);
         } else {
-            console.log(req.session);
-            console.log(req.session.vipLevel);
             res.json({rows: rows, playerRank: req.session.vipLevel, connected: req.session.connected});
         }
     });

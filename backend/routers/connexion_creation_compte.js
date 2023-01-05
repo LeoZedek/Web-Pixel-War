@@ -20,9 +20,6 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
 router.post('/logout', function (req, res) {
 	req.session.destroy();
 	req.session = undefined;
-	console.log("Logout !!!!!");
-	console.log(req.session);
-	console.log("fin !!!");
 	res.json("/");
 })
 
@@ -53,24 +50,24 @@ router.post('/signin', function (req, res) {
 			if (result != null) {
 				bcrypt.compare(data["password_signin"], result["pwdHash"], function (err, password_valid) {
 					if (password_valid) {
-						console.log("connexion reussie !")
-						console.log(result["lastModifTime"])
+						//console.log("connexion reussie !")
+						//console.log(result["lastModifTime"])
 						req.session.connected = true
 						req.session.userId = result["id"]
 						req.session.pseudo = result["pseudo"]
 						req.session.vipLevel = result["vipLevel"]
 						req.session.lastModifTime = result["lastModifTime"]
 						req.session.room = undefined
-						console.log(req.session)
+						//console.log(req.session)
 						res.redirect('/');
 					}
 					else {
-						console.log("wrong pseudo or password!")
+						console.error("wrong pseudo or password!")
 						res.redirect('/connexion')
 					}
 				})
 			} else {
-				console.log("la database est vide!")
+				console.error("la database est vide!")
 				res.redirect('/connexion')
 			}
 		})
@@ -91,7 +88,7 @@ router.post('/signup', function (req, res) {
 					const statement = db.prepare("INSERT INTO user(pseudo, pwdHash, vipLevel, avatarId, colorStats, nbModif, lastModifTime) VALUES(?,?,?,?,?,?,?);")
 					statement.run(data["username_signup"], hash, 0, 1, " ", 0, 0)
 					statement.finalize()
-					console.log("utilisateur enregistre")
+					//console.log("utilisateur enregistre")
 				})
 			})
 		}

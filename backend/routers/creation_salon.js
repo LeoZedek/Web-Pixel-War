@@ -42,7 +42,7 @@ const createCanva = (canvaSize, color_selected, canvaIndex) => {
         const statement3 = db.prepare("INSERT INTO canvas (id, canvaName, colorStats, size) VALUES (?,?,?,?)");
         statement3.run([canvaIndex, "canva_" + canvaIndex + ".png", colorStats, canvaSize], (err) => {
             if (err) {
-                console.log(err.message);
+                console.error(err.message);
             }
         });
 
@@ -79,54 +79,44 @@ router.post('/submit', (req, res) => {
         data.pwd = bcrypt.hashSync(data.pwd, 10);
     }
     db.serialize(() => {
-        console.log("0");
         const statement = db.prepare("SELECT * FROM rooms WHERE name=?;");
         statement.get(data.name, (err, result) => {
             if (err) {
-                console.log(err.message);
+                console.error(err.message);
             } else {
                 if (result === undefined) {
-                    console.log("1");
                     db.serialize(() => {
                         db.get("SELECT MAX(id) FROM canvas", (err, result) => {
                             if (err) {
-                                console.log(err.message);
+                                console.error(err.message);
                             } else {
                                 let canvaId = 0;
                                 if (result !== undefined) {
                                     canvaId = result['MAX(id)'] + 1;
                                 }
                                 const avatarName = "canva_" + canvaId + ".png";
-                                console.log("2");
                                 createCanva(data.canva_size, data.color_selected, canvaId);
 
-                                console.log("3");
                                 const statement2 = db.prepare("INSERT INTO rooms (name,pwdHash,canvasId,creatorId,minimumTime,minimumTimeVIP,minimumRank,avatarName) VALUES (?,?,?,?,?,?,?,?);");
                                 statement2.run([data.name, data.pwd, canvaId, req.session.userId, data.time, data.vip_time, data.minimum_rank, avatarName], (err) => {
                                     if (err) {
-                                        console.log(err.message);
+                                        console.error(err.message);
                                         res.json({ err: true });
                                     } else {
                                         res.json({ redirect: "/canva?name=" + data.name });
                                     }
                                 });
                                 statement2.finalize();
-                                console.log("4");
                             }
                         });
                     });
-                    console.log("5");
                 } else {
                     res.json({ exists: true });
                 }
-                console.log("6");
             }
-            console.log("7");
         });
-        console.log("8");
         statement.finalize();
     });
-    console.log("9");
 });
 
 

@@ -62,7 +62,7 @@ router.post('/get_statistics', (req, res) => {
 
 	else {
 		erreur_database = true;
-		console.log("id_canva pas valable");
+		console.error("id_canva pas valable");
 	}
 })
 
