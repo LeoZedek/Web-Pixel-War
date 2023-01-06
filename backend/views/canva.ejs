@@ -28,8 +28,10 @@
             <div class="cadre2" v-if="locked">
                 <form method="dialog">
                     <div class="bloc_room_pwd"><label for="password">Insert room's password</label></div>
-                    <div class="bloc_room_pwd"><input id="password" type="password" name="password" placeholder="Enter your password" v-model="submit_password_string"></div>
-                    <div class="bloc_room_pwd" id="bloc_room_pwd_button"><button v-on:click="submit_password()">Submit</button></div>
+                    <div class="bloc_room_pwd"><input id="password" type="password" name="password"
+                            placeholder="Enter your password" v-model="submit_password_string"></div>
+                    <div class="bloc_room_pwd" id="bloc_room_pwd_button"><button
+                            v-on:click="submit_password()">Submit</button></div>
                 </form>
             </div>
 
@@ -45,9 +47,10 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <div class="item_couleur" v-for="(mycolor, index) in color_ids">
+                                        <div class="item_couleur" v-for="(mycolor, index) in color_ids"
+                                            v-on:click="change(colors[color_ids[index]-1].color)">
                                             <input type="radio" name="select_color"
-                                                v-bind:value="colors[color_ids[index]-1].color"
+                                                v-bind:value="colors[color_ids[index]-1].color" v-model="color_chosed"
                                                 onclick="getColorValue()" checked>
                                             <label for="select_color"></label>
                                             <span v-bind:style="{ color: colors[color_ids[index]-1].color }">⬤</span>
@@ -108,6 +111,7 @@
                 data: {
                     colors: [],
                     color_ids: [],
+                    color_chosed: "",
                     locked: true,
                     password_hash: "",
                     style_visibility: "visibility: visible",
@@ -124,7 +128,7 @@
                     submit_password: function () {
                         // Auteur : Léo Zedek
 
-                        console.log('pass: ' + app.submit_password_string);
+                        //console.log('pass: ' + app.submit_password_string);
                         $.ajax({
                             type: "POST",
                             url: "/canva/check_password",
@@ -143,6 +147,11 @@
                                 alert("Error AJAX");
                             }
                         });
+                    },
+
+                    change: (color_name) => {
+                        // Auteur : Raphaël Largeau
+                        app.color_chosed = color_name
                     }
                 }
             })
@@ -172,6 +181,7 @@
             });
 
             $.ajax({
+                // Auteur : Ruth Liote
 
                 type: 'POST',
                 url: '/canva/info',
@@ -192,24 +202,17 @@
 
                     //Récupération des ids des couleurs
                     app.color_ids = color_brute;
-                    console.log(app.color_ids);
+                    //console.log(app.color_ids);
+
+                    app.colors = data.listColors;
+                    app.color_chosed = app.colors[app.color_ids[0]-1].color;
                 },
 
                 error: function () {
                     alert('Problème AJAX');
                 }
             });
-            $.ajax({
-                type: 'POST',
-                url: '/create_room/colors',
-                success: function (received) {
-                    app.colors = received.colors;
-                    console.table(app.colors);
-                },
-                error: function () {
-                    alert('Problème AJAX');
-                }
-            });
+            
         </script>
         <script src="assets/js/canvas.js"></script>
 </body>

@@ -8,7 +8,7 @@ const WebSocket = require('ws');
 const VIPlevel = 20;
 
 // Mathias Hersent
-function selectModifsById(modifs, id) {
+function selectModifsById(modifs, id) {
     let result = [];
     for (let i = 0; i < modifs.length; i++) {
         if (modifs[i].id === id) {
@@ -24,11 +24,11 @@ const server = new WebSocket.Server({
     port: 8080
 });
 let sockets = [];
-server.on('connection', function(socket) {
+server.on('connection', function (socket) {
     sockets.push(socket);
 
     // When you receive a message, send that message to every socket.
-    socket.on('message', function(data) {
+    socket.on('message', function (data) {
         data = JSON.parse(data.toString());
 
         lastModifs.push(data);
@@ -52,7 +52,7 @@ server.on('connection', function(socket) {
                             console.error(err.message);
                         } else if (result.id !== null) {
                             colorId = result.id;
-                            
+
                             // On met à jour les stats de couleur
                             let tmp = colorStats.split(',');
                             tmp.pop();
@@ -66,11 +66,11 @@ server.on('connection', function(socket) {
                             let updatedColorStats = JSON.stringify(colorStatsDict).toString().replace(/\"/g, '').replace('{', '').replace('}', '') + ',';
 
                             const statement2 = db.prepare("UPDATE canvas SET colorStats = ?, nbModif = ? where id = ?;");
-                            statement2.run(updatedColorStats,nbModifRoom, data.id);
+                            statement2.run(updatedColorStats, nbModifRoom, data.id);
                             statement2.finalize();
                         }
                     });
-                    statement1.finalize();                    
+                    statement1.finalize();
                 }
             });
             statement.finalize();
@@ -130,7 +130,7 @@ server.on('connection', function(socket) {
             });
             statement3.finalize();
         });
-        
+
         jimp.read('../frontend/assets/img/canvas/canva_' + data.id + '.png')
             .then(image => {
                 image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
@@ -151,7 +151,7 @@ server.on('connection', function(socket) {
     });
 
     // When a socket closes, or disconnects, remove it from the array.
-    socket.on('close', function() {
+    socket.on('close', function () {
         // console.log('deco ', socket.request.headers.data);
         sockets = sockets.filter(s => s !== socket);
     });
@@ -165,7 +165,7 @@ const db = new sqlite3.Database('./db/db_pixelwar.db', (err) => {
     console.log('Connected to the database!');
 });
 
-router.post('/check_password', function(req, res) {
+router.post('/check_password', function (req, res) {
     // Auteur : Léo Zedek
 
     let data = req.body;
@@ -183,17 +183,17 @@ router.post('/check_password', function(req, res) {
 
             } else if (result !== undefined) {
 
-                bcrypt.compare(submit_password, result["pwdHash"], function(err, result) {
+                bcrypt.compare(submit_password, result["pwdHash"], function (err, result) {
                     if (err) {
                         console.error(err.message);
                     }
 
                     else {
                         if (result) {
-                            res.json({good_password : true});
+                            res.json({ good_password: true });
                         }
                         else {
-                            res.json({good_password: false});
+                            res.json({ good_password: false });
                         }
                     }
                 });
@@ -223,7 +223,7 @@ router.post('/get_password_hash', function (req, res) {
                 res.json(null);
 
             } else if (result !== undefined) {
-                res.json({password_hash : result["pwdHash"]});
+                res.json({ password_hash: result["pwdHash"] });
 
             } else {
                 console.error("Room's name not found :" + room_name);
@@ -239,25 +239,38 @@ router.post('/get_password_hash', function (req, res) {
 router.post('/info', function (req, res) {
     let data = req.body;
     db.serialize(() => {
-        const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
-        statement.get(data.name, (err, result) => {
+        const colors = [];
+        db.all("SELECT * FROM colors;", (err, rows) => {
             if (err) {
-                console.error(err.message);
-                res.json(null);
-            } else if (result !== undefined) {
-                let info = {};
-                info.id = result.id;
-                info.size = result.size;
-                info.colors = result.colorStats;
-                info.minTime = result.minimumTime;
-                info.minTimeVIP = result.minimumTimeVIP;
-                info.minRank = result.minimumRank;
-                res.json(info);
+                console.error(err);
             } else {
-                res.json(null);
+                for (row in rows) {
+                    colors.push({ color: rows[row].colorCode, id: rows[row].id - 1 });
+                }
             }
+            const statement = db.prepare("SELECT * FROM canvas INNER JOIN rooms ON canvas.id = rooms.id WHERE rooms.name = ?;");
+            statement.get(data.name, (err, result) => {
+                if (err) {
+                    console.error(err.message);
+                    res.json(null);
+                } else if (result !== undefined) {
+                    let info = {};
+                    info.id = result.id;
+                    info.size = result.size;
+                    info.colors = result.colorStats;
+                    info.minTime = result.minimumTime;
+                    info.minTimeVIP = result.minimumTimeVIP;
+                    info.minRank = result.minimumRank;
+                    info.listColors = colors;
+                    console.log(info)
+                    res.json(info);
+                } else {
+                    res.json(null);
+                }
+            });
+            statement.finalize();
         });
-        statement.finalize();
+        
     });
 });
 
@@ -281,7 +294,7 @@ router.post("/get_time_to_wait", (req, res) => {
 
                 let time_now = Math.floor(Date.now() / 1000); // seconds since epoch
 
-                res.json({time_since_last_modif : time_now - last_modif_time});
+                res.json({ time_since_last_modif: time_now - last_modif_time });
             }
 
             else {
@@ -327,7 +340,7 @@ router.post("/update_date", (req, res) => {
                 if (nbModif >= VIPlevel) {
                     req.session.vipLevel = 1;
                 }
-                res.json({new_vip_level : req.session.vipLevel})
+                res.json({ new_vip_level: req.session.vipLevel })
 
             }
 
@@ -343,9 +356,9 @@ router.post("/update_date", (req, res) => {
 
 router.use('/', (req, res) => {
     let data = req.query;
-	let room_name = data["name"];
+    let room_name = data["name"];
     req.session.room = room_name
-    res.render('canva.ejs', {pseudo: req.session.pseudo, userId: req.session.userId, connected : req.session.connected, room : req.session.room, vipLevel : req.session.vipLevel });
+    res.render('canva.ejs', { pseudo: req.session.pseudo, userId: req.session.userId, connected: req.session.connected, room: req.session.room, vipLevel: req.session.vipLevel });
 });
 
 // handling errors
