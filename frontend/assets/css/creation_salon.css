@@ -21,7 +21,9 @@
 }
 
 .cadre{
-    margin: 25vh 15vw;
+    margin-top: 20vh;
+    margin-right: 15vw;
+    margin-left: 15vw;
     width: 70vw;
     height: fit-content;
     justify-content: center;

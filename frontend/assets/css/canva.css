@@ -6,10 +6,10 @@
 .page_canva {
     display: flex;
     flex-direction: row;
-    padding: 5vh 5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
     height: 80vh;
     width: 90vw;
-    padding-top: 0;
 }
 
 .user_list {
@@ -81,6 +81,7 @@ span {
 
 #room_title{
     margin-top: 6vh;
+    margin-bottom: -1vh;
     font-size: 20px;
 }
 
@@ -123,13 +124,12 @@ span {
     display: flex;
     flex-direction: column;
     width: 50%;
-    margin: 0 25%;
-    padding: 2%;
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 .bloc_room_pwd {
     width: 100%;
-    margin: 0;
     text-align: center;
     align-items: center;
     margin-bottom: 1%;

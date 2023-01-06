@@ -1,6 +1,5 @@
 body{
     overflow: scroll;
-    margin-bottom: 5%;
     
 }
 
@@ -9,7 +8,9 @@ body{
 }
 
 .cadre{
-    margin: 10vh 5%;
+    margin-top: 8vh;
+    margin-left: 5%;
+    margin-right: 5%;
     padding: 2%;
     text-align: center;
     width: 40%;
