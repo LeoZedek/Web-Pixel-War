@@ -35,7 +35,7 @@
                     </div>
                 <div class="ligne_texte">
                     Username :
-                    <input type="text" class="new_pseudo" placeholder="new pseudo" v-model="pseudo" required>
+                    <input type="text" class="new_pseudo" placeholder="new pseudo" v-on:keyup="checkValidPseudo()" v-model="pseudo" required>
                 </div>
                 <div class="ligne_texte">
                     Password : 
@@ -54,7 +54,8 @@
                         <option value="8">drawn rabbit</option>
                     </select>
                 </div>
-                <div class="ligne_texte"> 
+                <div v-if="notValidPseudo"><h3 style="color: red;" class="ligne_texte">this name is already taken</h3></div>
+                <div class="ligne_texte" v-if="!notValidPseudo"> 
                     <input type="button" class="bouton" v-on:click="update_profil()" value="Edit my info">
                 </div>
             
@@ -103,9 +104,28 @@
                 vipLevel : "",
                 avatarPath : "assets/img/avatar_0.png",
                 avatar_id : 0,
+                notValidPseudo : false,
+                current_pseudo : "",
             },
 
             methods: {
+                //Adrien Gaulin
+                checkValidPseudo: function() {
+                    if(app.current_pseudo === app.pseudo){
+                        app.notValidPseudo = false
+                    } else{
+					var pseudoToVerify = "pseudo=" + app.pseudo
+					$.ajax({
+						type: "POST",
+						url: "/verify",
+						data: pseudoToVerify,
+						success: function(sucessResponse) {
+							app.notValidPseudo = sucessResponse
+							
+						}
+					})
+                }
+				},
                 update_profil() {
                     
                     if (app._data.pwdHash != ''){
@@ -148,6 +168,7 @@
             data : {id : id_user},
             success: function(received_data) {
                 app._data.pseudo = received_data["pseudo"];
+                app._data.current_pseudo = received_data["pseudo"];
                 //app._data.pwdHash = received_data["pwd_hash"];
                 app._data.number_modifications = received_data["nb_modif"];
                 app._data.vipLevel = vip_level_name[received_data["vip_level"]];
