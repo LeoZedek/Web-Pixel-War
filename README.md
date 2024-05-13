@@ -1,5 +1,7 @@
 # PixelWar
 
+Ce projet est un projet d'étude nécessaire pour la validation d'un cours sur les technologies Web. Créer par 5 membres, ce projet est une version Web d'un jeu de type "Pixel War".
+
 ## pour construire la database : 
 `make`
 
